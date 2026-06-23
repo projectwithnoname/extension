@@ -112,13 +112,13 @@ const Note = (props: NoteProps) => {
         onChange={handleValueChange}
       ></textarea>
       <div className="noteContainerActions">
-        <Button palette="secondary" type="default" size="md" onClick={onCancel}>
+        <Button palette="secondary" type="default" size="sm" onClick={onCancel}>
           Cancel
         </Button>
         <Button
           palette="primary"
           type="default"
-          size="md"
+          size="sm"
           disabled={noteState.value.trim() === ""}
           onClick={handleSave}
         >

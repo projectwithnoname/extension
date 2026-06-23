@@ -1,39 +1,38 @@
-import { useEffect, useState } from "react";
+import { HighlightsProvider } from "./context/HighlightsContext";
+import { useHighlights } from "./context/useHighlights";
 import "./styles.scss";
-import { storageString } from "../shared/storage";
-import type { Highlight } from "../shared/types";
 
-const SidePanel = () => {
-  const [testData, setTestData] = useState<Highlight[] | null>(null);
+const HighlightList = () =>
+{
+  const { highlights, loading, updateNote, deleteHighlight } = useHighlights();
 
-  useEffect(() => {
-    chrome.storage.local.get("highlights", (result: { highlights?: Highlight[] }) => {
-      const highlights = result.highlights ?? [];
-
-      console.log(highlights, "loaded highlights");
-
-      setTestData(highlights);
-    });
-  }, []);
+  if (loading)
+  {
+    return <p>Loading…</p>;
+  }
 
   return (
-    <div id="sidePanelContainer">
-      Brand name here
-      <button onClick={() => chrome.runtime.openOptionsPage()}>Open Settings</button>
-      <p>key: {storageString}</p>
-      {testData && (
-        <div>
-          {testData.map((item) => (
-            <div key={item.id}>
-              <span>{item.id}</span>
-              {" | "}
-              <span>{item.text}</span>
-              {" | "}
-              <span>{item.timestamp}</span>
-            </div>
-          ))}
+    <div>
+      {highlights.map((highlight) => (
+        <div key={highlight.id}>
+          <span>{highlight.text}</span>
+          <button onClick={() => updateNote(highlight.id, `edited ${Date.now()}`)}>
+            Edit note
+          </button>
+          <button onClick={() => deleteHighlight(highlight.id)}>Delete</button>
         </div>
-      )}
+      ))}
+    </div>
+  );
+};
+
+const SidePanel = () =>
+{
+  return (
+    <div id="sidePanelContainer">
+      <HighlightsProvider>
+        <HighlightList />
+      </HighlightsProvider>
     </div>
   );
 };
