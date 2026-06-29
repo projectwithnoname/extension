@@ -59,7 +59,7 @@ const NoteViewer = (props: NoteViewerProps) => {
         <Note
           show
           initialValue={note}
-          onCancel={() => setNoteViewerState({ ...noteViewerState, editing: false })}
+          onCancel={() => setNoteViewerState((prev) => ({ ...prev, editing: false }))}
           onSave={onSave}
         />
       ) : (
@@ -69,7 +69,7 @@ const NoteViewer = (props: NoteViewerProps) => {
             type="button"
             className="noteViewerEdit"
             aria-label="Edit note"
-            onClick={() => setNoteViewerState({ ...noteViewerState, editing: true })}
+            onClick={() => setNoteViewerState((prev) => ({ ...prev, editing: true }))}
           >
             <Icon name="edit" size={12} />
           </button>

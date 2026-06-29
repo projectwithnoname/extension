@@ -1,21 +1,13 @@
-// Semantic color tokens shared across the side panel, options page, and the
-// content-script toolbar.
-//
-// `:root` applies in the side panel/options documents. `:host` applies inside the
-// content script's closed shadow root. CSS custom properties inherit across the
-// shadow boundary, so the toolbar picks these up through `:host`. Targeting both
-// selectors keeps a single source of truth — `:host` matches nothing in a normal
-// document and `:root` matches nothing inside a shadow tree, so each context only
-// ever sees the rule that applies to it.
-
 //#151b23 github dark bg
 
 :root,
 :host {
-  // Primitive palette — raw values, not consumed directly by components.
 
-  --temp-purple: #5943b6;
-  --temp-purple-secondary: #a989f5;
+  --brand-purple: #5943b6;
+  --brand-purple-secondary: #a989f5;
+  --brand-orange-primary: #E24329;
+  --brand-orange-secondary: #FC6D26;
+  --brand-orange-tertiary: #FCA326;
 
   --color-neutral-900: #282828;
   --color-neutral-800: #424242;

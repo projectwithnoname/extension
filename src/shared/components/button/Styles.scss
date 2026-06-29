@@ -56,11 +56,11 @@
 
   &--primary {
     &.button--default {
-      background: var(--temp-purple);
+      background: var(--brand-purple);
       color: var(--color-neutral-0);
 
       &:hover {
-        background: var(--temp-purple-secondary);
+        background: var(--brand-purple-secondary);
       }
     }
 

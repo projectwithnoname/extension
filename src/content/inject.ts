@@ -430,6 +430,10 @@ export const removeHighlight = (id: string) => {
 export const reapplyHighlight = (highlight: Highlight) => {
   const { id, context, color, style } = highlight;
 
+  if (document.querySelector(`span[data-highlight-id="${id}"]`)) {
+    return;
+  }
+
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   const textNodes: Text[] = [];
   const positions: number[] = [];

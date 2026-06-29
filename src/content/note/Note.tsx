@@ -40,10 +40,10 @@ const Note = (props: NoteProps) => {
     }
 
     const frame = requestAnimationFrame(() => {
-      setNoteState({
-        ...noteState,
+      setNoteState((prev) => ({
+        ...prev,
         open: true,
-      });
+      }));
 
       const textarea = textareaRef.current;
       if (textarea) {
@@ -96,10 +96,11 @@ const Note = (props: NoteProps) => {
   };
 
   const handleValueChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setNoteState({
-      ...noteState,
-      value: event.target.value,
-    });
+    const { value } = event.target;
+    setNoteState((prev) => ({
+      ...prev,
+      value,
+    }));
   };
 
   return (

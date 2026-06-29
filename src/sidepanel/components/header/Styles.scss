@@ -1,0 +1,18 @@
+#sidePanelHeader{
+
+    .tabs{
+        display: flex;
+        align-items: center;
+
+        .tab{
+            color: #000;
+            font: var(--font-lg-semibold);
+            padding: 8px 12px;
+            &.active{
+                border-bottom: 2px solid greenyellow;
+            }
+        }
+    }
+
+    
+}
