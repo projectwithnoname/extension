@@ -12,4 +12,6 @@ export interface Highlight {
   color: string;
   style?: HighlightStyle;
   note?: string;
+  title?: string;
+  favicon?: string;
 }

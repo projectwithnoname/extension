@@ -30,6 +30,23 @@ export interface HighlightResult {
   context: string;
 }
 
+const getPageTitle = (): string =>
+{
+  return document.title;
+};
+
+const getPageFavicon = (): string =>
+{
+  // return new Promise((resolve) => {
+  //   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //     const url = tabs[0].url;
+  //     const favicon = `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`;
+  //     resolve(favicon);
+  //   });
+  // });
+  return `https://www.google.com/s2/favicons?sz=64&domain_url=${location.href}`;
+};
+
 export const buildCreatePayload = (
   result: HighlightResult,
   color: string,
@@ -43,6 +60,8 @@ export const buildCreatePayload = (
     context: result.context,
     color,
     style,
+    title: getPageTitle(),
+    favicon: getPageFavicon(),
     ...(note !== undefined ? { note } : {}),
   };
 };

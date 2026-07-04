@@ -8,7 +8,7 @@ chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error
 
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "ACTION_CLICKED") {
-    const { id, text, url, context, color, style, note } = message.payload;
+    const { id, text, url, context, color, style, note, title, favicon } = message.payload;
 
     const newHighlight: Highlight = {
       id,
@@ -19,6 +19,8 @@ chrome.runtime.onMessage.addListener((message) => {
       color,
       style,
       note,
+      title,
+      favicon,
     };
 
     chrome.storage.local.get("highlights", (result) => {

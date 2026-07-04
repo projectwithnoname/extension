@@ -1,3 +1,5 @@
+import type { Highlight } from "./types";
+
 const TRACKING_PARAMS = [
   "utm_source",
   "utm_medium",
@@ -42,3 +44,16 @@ export function normalizeUrl(rawUrl: string): string {
 // THIS WILL FAIL ON ANY SPA HAT USES #HASHES IN URL
 // GMAIL, X.COM... FAILS
 // POTENTIALLY ADD A CHECK FOR HASHES AND THEN NORMALIZE THEM AS WELL
+
+
+export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {
+    return list.filter(item => item.url == domain)
+}
+
+export async function getCurrentPage(): Promise<string> {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if(tab && tab.url) {
+        return normalizeUrl(tab.url);
+    }
+    return "";
+}

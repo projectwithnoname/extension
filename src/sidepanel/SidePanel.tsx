@@ -7,10 +7,12 @@ import "./styles.scss";
 import Collaborate from "./views/Collaborate";
 import Content from "./views/Content";
 import Tree from "./views/Tree";
+import { useActivePage } from "./hooks/useActivePage";
 
 const HighlightList = () =>
 {
   const { highlights, loading, updateNote, deleteHighlight } = useHighlights();
+
 
   if (loading)
   {
@@ -34,60 +36,28 @@ const HighlightList = () =>
 
 export type ViewId = "content" | "collaborate" | "tree";
 
-export interface ViewTab
-{
-  id: ViewId;
-  label: string;
-  component: ComponentType;
-}
-
-const contentViews: ViewTab[] = [
-  {
-    id: "content",
-    label: "Content",
-    component: Content
-  },
-  {
-    id: "collaborate",
-    label: "Collaborate",
-    component: Collaborate
-  },
-  {
-    id: "tree",
-    label: "Tree",
-    component: Tree
-  }
-];
-
-function getViewComponent(activeView: ViewId): ComponentType
-{
-  for (const view of contentViews)
-  {
-    if (view.id === activeView)
-    {
-      return view.component;
-    }
-  }
-
-  return Content;
-}
+const views: Record<ViewId, ComponentType> = {
+  content: Content,
+  collaborate: Collaborate,
+  tree: Tree
+};
 
 const SidePanel = () =>
 {
   const [activeView, setActiveView] = useState<ViewId>("content");
 
-  const ActiveComponent = getViewComponent(activeView);
+  const ActiveComponent = views[activeView];
+
+  // const currentPage = useActivePage();
+  // console.log("Current page:", currentPage);
 
   return (
     <div id="sidePanelContainer">
       <HighlightsProvider>
-        <Header
-          tabs={contentViews}
-          activeView={activeView}
-          onSelect={setActiveView}
-        />
+        <Header activeView={activeView} onSelect={setActiveView} />
         <ActiveComponent />
-        <HighlightList />
+        {/* <p>Current page: {currentPage}</p> */}
+        {/* <HighlightList /> */}
       </HighlightsProvider>
     </div>
   );

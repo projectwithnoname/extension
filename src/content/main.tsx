@@ -20,6 +20,7 @@ import useToolbar from "./hooks/useToolbar";
 
 const host = document.createElement("div");
 host.id = "my-extension-root";
+host.style.setProperty("all", "initial", "important");
 document.body.appendChild(host);
 
 const shadowRoot = host.attachShadow({ mode: "closed" });
@@ -29,6 +30,7 @@ styleEl.textContent = styles;
 shadowRoot.appendChild(styleEl);
 
 const mountPoint = document.createElement("div");
+mountPoint.id = "extension-root";
 shadowRoot.appendChild(mountPoint);
 
 const HighlighterRoot = () => {

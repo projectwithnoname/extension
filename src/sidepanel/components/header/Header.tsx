@@ -1,14 +1,19 @@
-import type { ViewId, ViewTab } from "../../SidePanel";
+import type { ViewId } from "../../SidePanel";
 import "./Styles.scss";
 
 interface HeaderProps
 {
-  tabs: ViewTab[];
   activeView: ViewId;
   onSelect: (id: ViewId) => void;
 }
 
-const Header = ({ tabs, activeView, onSelect }: HeaderProps) =>
+const tabs: { id: ViewId; label: string }[] = [
+  { id: "content", label: "Content" },
+  { id: "collaborate", label: "Collaborate" },
+  { id: "tree", label: "Tree" }
+];
+
+const Header = ({ activeView, onSelect }: HeaderProps) =>
 {
   return (
     <header id="sidePanelHeader">
