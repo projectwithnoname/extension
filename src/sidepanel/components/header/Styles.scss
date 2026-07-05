@@ -1,18 +1,46 @@
 #sidePanelHeader{
+    padding-top: 1rem;
 
     .tabs{
         display: flex;
         align-items: center;
 
         .tab{
-            color: #000;
-            font: var(--font-lg-semibold);
+            text-align: center;
+            font: var(--body-sm-semibold);
             padding: 8px 12px;
+            width: 100%;
+            color: var(--color-neutral-500);
+            cursor: pointer;
+            position: relative;
+
+
+            &:hover {
+                color: var(--color-neutral-900);
+
+            }
+
             &.active{
-                border-bottom: 2px solid greenyellow;
+                color: var(--brand-orange-secondary);
+
+                &::after{
+                    content: "";
+                    position: absolute;
+                    bottom: -1px;
+                    left: 10%;
+                    right: 10%;
+                    height: 2px;
+                    background-color: var(--brand-orange-secondary);
+                    border-top-left-radius: 8px;
+                    border-top-right-radius: 8px;
+                }
             }
         }
+        border-bottom: 1px solid var(--alpha-silver-60);
     }
 
+    .sort{
+        padding: 1rem 0.5rem;
+    }
     
 }

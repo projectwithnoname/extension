@@ -37,13 +37,7 @@ const getPageTitle = (): string =>
 
 const getPageFavicon = (): string =>
 {
-  // return new Promise((resolve) => {
-  //   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-  //     const url = tabs[0].url;
-  //     const favicon = `https://www.google.com/s2/favicons?sz=64&domain_url=${url}`;
-  //     resolve(favicon);
-  //   });
-  // });
+
   return `https://www.google.com/s2/favicons?sz=64&domain_url=${location.href}`;
 };
 

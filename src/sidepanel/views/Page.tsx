@@ -5,7 +5,7 @@ import { useActivePage } from "../hooks/useActivePage"
 import {filterByDomain} from "../../shared/utils"
 import type {Highlight} from "../../shared/types"
 
-const Content = () => {
+const Page = () => {
   const currentPage = useActivePage();
   const { highlights} = useHighlights();
 
@@ -32,4 +32,4 @@ const Content = () => {
   )
 }
 
-export default Content
+export default Page

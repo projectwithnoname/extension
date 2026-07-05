@@ -1,3 +1,5 @@
+import SegmentPicker from "../../../shared/components/segmentPicker/SegmentPicker";
+import SegmentPickerItem from "../../../shared/components/segmentPicker/SegmentPickeritem";
 import type { ViewId } from "../../SidePanel";
 import "./Styles.scss";
 
@@ -8,9 +10,9 @@ interface HeaderProps
 }
 
 const tabs: { id: ViewId; label: string }[] = [
-  { id: "content", label: "Content" },
-  { id: "collaborate", label: "Collaborate" },
-  { id: "tree", label: "Tree" }
+  { id: "page", label: "Page" },
+  { id: "tree", label: "Tree" },
+  { id: "shared", label: "Shared" }
 ];
 
 const Header = ({ activeView, onSelect }: HeaderProps) =>
@@ -28,6 +30,16 @@ const Header = ({ activeView, onSelect }: HeaderProps) =>
           </div>
         ))}
       </section>
+
+      <section className="sort">
+        <SegmentPicker>
+          <SegmentPickerItem label="This page" />
+          <SegmentPickerItem label="This domain" />
+        </SegmentPicker>
+
+
+      </section>
+
     </header>
   );
 };

@@ -4,8 +4,8 @@ import Header from "./components/header/Header";
 import { HighlightsProvider } from "./context/HighlightsContext";
 import { useHighlights } from "./context/useHighlights";
 import "./styles.scss";
-import Collaborate from "./views/Collaborate";
-import Content from "./views/Content";
+import Shared from "./views/Shared";
+import Page from "./views/Page";
 import Tree from "./views/Tree";
 import { useActivePage } from "./hooks/useActivePage";
 
@@ -34,17 +34,17 @@ const HighlightList = () =>
   );
 };
 
-export type ViewId = "content" | "collaborate" | "tree";
+export type ViewId = "page" | "shared" | "tree";
 
 const views: Record<ViewId, ComponentType> = {
-  content: Content,
-  collaborate: Collaborate,
+  page: Page,
+  shared: Shared,
   tree: Tree
 };
 
 const SidePanel = () =>
 {
-  const [activeView, setActiveView] = useState<ViewId>("content");
+  const [activeView, setActiveView] = useState<ViewId>("page");
 
   const ActiveComponent = views[activeView];
 
