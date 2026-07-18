@@ -1,3 +1,4 @@
+import Icon from "../../../shared/components/icon/Icon";
 import SegmentPicker from "../../../shared/components/segmentPicker/SegmentPicker";
 import SegmentPickerItem from "../../../shared/components/segmentPicker/SegmentPickeritem";
 import type { ViewId } from "../../SidePanel";
@@ -32,10 +33,22 @@ const Header = ({ activeView, onSelect }: HeaderProps) =>
       </section>
 
       <section className="sort">
-        <SegmentPicker>
-          <SegmentPickerItem label="This page" />
-          <SegmentPickerItem label="This domain" />
-        </SegmentPicker>
+        {activeView === "page" && (
+          <SegmentPicker>
+            <SegmentPickerItem label="This page" />
+            <SegmentPickerItem label="This domain" />
+          </SegmentPicker>
+        )}
+
+        <div id="search">
+          <div className="inputContainer">
+          <Icon name="search-icon" size={14} />
+          <input placeholder="Search..." type="text" name="search-box" />
+          </div>
+
+
+        <div>filter</div>
+        </div>
 
 
       </section>

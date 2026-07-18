@@ -629,8 +629,21 @@ export const setupNoteHover = (showNote: ShowNoteCallback, hideNote: () => void)
       return;
     }
 
-    const rect = span.getBoundingClientRect();
-    showNote(rect.left + rect.width / 2, rect.top, id);
+    // A highlight can span several spans (one per text node/line). Anchor the
+    // note to the top of the whole block, centered horizontally, so it sits
+    // above the highlight instead of jumping to whichever span is hovered.
+    const spans = document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`);
+    let top = Infinity;
+    let left = Infinity;
+    let right = -Infinity;
+    spans.forEach((highlightSpan) => {
+      const spanRect = highlightSpan.getBoundingClientRect();
+      top = Math.min(top, spanRect.top);
+      left = Math.min(left, spanRect.left);
+      right = Math.max(right, spanRect.right);
+    });
+
+    showNote((left + right) / 2, top, id);
   };
 
   const handleOut = (event: MouseEvent) => {

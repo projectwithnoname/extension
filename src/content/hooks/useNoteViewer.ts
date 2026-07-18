@@ -53,7 +53,16 @@ export default function useNoteViewer({ notesRef }: UseNoteViewerArgs) {
       }
 
       clearHideTimer();
-      setViewerState({ visible: true, x, y, highlightId, note });
+      setViewerState((current) => {
+        // Already showing this highlight's note: keep the popover put. Hover
+        // fires per span (a highlight can be many spans), so re-setting here
+        // would make the note jump line to line and re-render away any inline
+        // edit in progress.
+        if (current.visible && current.highlightId === highlightId) {
+          return current;
+        }
+        return { visible: true, x, y, highlightId, note };
+      });
     };
 
     return setupNoteHover(showNoteViewer, scheduleHide);
