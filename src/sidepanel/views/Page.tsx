@@ -22,6 +22,7 @@ const Page = () => {
   return (
     <div>
       <h2>Highlights tested</h2>
+      <h3>{currentPage}</h3>
 
       {filteredHighlights.length > 0 ? (
         filteredHighlights.map((highlight: Highlight) => (

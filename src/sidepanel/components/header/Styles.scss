@@ -61,9 +61,10 @@
             flex: 1;
             
             input[type="text"]{
-            font: var(--body-sm-regular);
-            color: var(--color-neutral-900);
-            width: 100%;
+                font: var(--body-sm-regular);
+                color: var(--color-neutral-900);
+                background-color: transparent;
+                width: 100%;
         
             }
             &:hover {
