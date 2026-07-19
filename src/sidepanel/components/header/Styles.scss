@@ -1,6 +1,6 @@
 #sidePanelHeader{
     padding-top: 1rem;
-      border-bottom: 1px solid var(--alpha-silver-60);
+      border-bottom: 1px solid var(--alpha-night-10);
 
     .tabs{
         display: flex;
@@ -37,7 +37,7 @@
                 }
             }
         }
-        border-bottom: 1px solid var(--alpha-silver-60);
+        border-bottom: 1px solid var(--alpha-night-10);
     }
 
     .sort{
@@ -54,7 +54,7 @@
         .inputContainer{
             display: flex;
             align-items: center;
-            border: 1px solid var(--alpha-silver-60);
+            border: 1px solid var(--alpha-night-10);
             padding: 0.5rem;
             border-radius: 6px;
             gap:  0.5rem;

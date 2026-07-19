@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ComponentType } from "react";
 import Header from "./components/header/Header";
 import { HighlightsProvider } from "./context/HighlightsContext";
-import { useHighlights } from "./context/useHighlights";
+import { useHighlights } from "./hooks/useHighlights";
 import "./styles.scss";
 import Shared from "./views/Shared";
 import Page from "./views/Page";

@@ -46,9 +46,9 @@ export function normalizeUrl(rawUrl: string): string {
 // POTENTIALLY ADD A CHECK FOR HASHES AND THEN NORMALIZE THEM AS WELL
 
 
-export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {
-    return list.filter(item => item.url == domain)
-}
+// export function filterByPage(page: string, list: Highlight[]): Highlight[] {
+//     return list.filter(item => item.url == page)
+// }
 
 export async function getCurrentPage(): Promise<string> {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -56,4 +56,59 @@ export async function getCurrentPage(): Promise<string> {
         return normalizeUrl(tab.url);
     }
     return "";
+}
+
+// export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {
+//     const url = new URL(domain);
+//     return list.filter(item => {
+//         const itemUrl = new URL(item.url);
+//         return itemUrl.hostname === url.hostname;
+//     });
+// }
+
+function getSafeNormalizedUrl(rawUrl: string): string | null {
+  if (!rawUrl) {
+    return null;
+  }
+
+  try {
+    return normalizeUrl(rawUrl);
+  } catch {
+    return null;
+  }
+}
+
+export function filterByPage(page: string, list: Highlight[]): Highlight[] {
+  const normalizedPage = getSafeNormalizedUrl(page);
+  if (!normalizedPage) {
+    return [];
+  }
+
+  return list.filter((item) => {
+    const normalizedItemUrl = getSafeNormalizedUrl(item.url);
+    return normalizedItemUrl === normalizedPage;
+  });
+}
+
+export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {
+  const normalizedDomain = getSafeNormalizedUrl(domain);
+  if (!normalizedDomain) {
+    return [];
+  }
+
+  const parsedDomain = new URL(normalizedDomain);
+
+  return list.filter((item) => {
+    const normalizedItemUrl = getSafeNormalizedUrl(item.url);
+    if (!normalizedItemUrl) {
+      return false;
+    }
+
+    try {
+      const parsedItemUrl = new URL(normalizedItemUrl);
+      return parsedItemUrl.hostname === parsedDomain.hostname;
+    } catch {
+      return false;
+    }
+  });
 }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState } from 'react';
-import { useHighlights } from "../context/useHighlights"
+import { useHighlights } from "../hooks/useHighlights"
 import { useActivePage } from "../hooks/useActivePage"
-import {filterByDomain} from "../../shared/utils"
+import {filterByPage, filterByDomain} from "../../shared/utils"
 import type {Highlight} from "../../shared/types"
 import { useTheme } from '../context/ThemeContext';
 
@@ -11,7 +11,10 @@ const Page = () => {
   const { highlights} = useHighlights();
 
   console.log(highlights);
-  const filteredHighlights = filterByDomain(currentPage, highlights );
+  console.log("current page: ", currentPage);
+  const filteredHighlights = filterByPage(currentPage, highlights );
+  const filteredDomainHighlights = filterByDomain(currentPage, highlights);
+  console.log("filtered highlights for current page: ", filteredDomainHighlights);
 
   //temp, not needed
   const { theme, toggleTheme } = useTheme();

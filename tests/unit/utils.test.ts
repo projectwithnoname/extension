@@ -1,5 +1,5 @@
 import { describe, it, expect, test, vi, afterEach } from "vitest";
-import { filterByDomain, getCurrentPage, normalizeUrl } from "../../src/shared/utils";
+import { filterByPage, getCurrentPage, normalizeUrl, filterByDomain } from "../../src/shared/utils";
 import type { Highlight } from "../../src/shared/types";
 
 describe("normalizeUrl", () =>
@@ -37,7 +37,7 @@ describe("normalizeUrl", () =>
   });
 });
 
-describe("filterByDomain", () => {
+describe("filterByPage", () => {
   const dummyHighlights: Highlight[] = [
   {
     id: "1",
@@ -88,10 +88,19 @@ describe("filterByDomain", () => {
     note: "Worth revisiting",
   },
 ];
-  test("test should return higlights that were only on the curent dmain", () => {
+  test("test should return higlights that were only on the curent page", () => {
     
-    const dummyDomain: string = "https://example.com/blog/post"
+    const dummyPage: string = "https://example.com/blog/post"
     const expected:Highlight[] = [dummyHighlights[1], dummyHighlights[4]];
+    const actual = filterByPage(dummyPage, dummyHighlights);
+
+    expect(actual).toStrictEqual(expected);
+  })
+
+  test("get higlights from the same domain, no matter the page", () => {
+
+    const dummyDomain: string = "https://example.com"
+    const expected:Highlight[] = [dummyHighlights[0], dummyHighlights[1], dummyHighlights[4]];
     const actual = filterByDomain(dummyDomain, dummyHighlights);
 
     expect(actual).toStrictEqual(expected);

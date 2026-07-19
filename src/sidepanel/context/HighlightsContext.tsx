@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import type { Highlight } from "../../shared/types";
 import { sendUpdateHighlight, sendUpdateNote, sendDelete } from "../../shared/messaging";
-import { HighlightsContext, type HighlightsContextValue } from "./useHighlights";
+import { HighlightsContext, type HighlightsContextValue } from "../hooks/useHighlights";
 
 export const HighlightsProvider = ({ children }: { children: ReactNode }) =>
 {
