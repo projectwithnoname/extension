@@ -45,17 +45,16 @@ export function normalizeUrl(rawUrl: string): string {
 // GMAIL, X.COM... FAILS
 // POTENTIALLY ADD A CHECK FOR HASHES AND THEN NORMALIZE THEM AS WELL
 
-
 // export function filterByPage(page: string, list: Highlight[]): Highlight[] {
 //     return list.filter(item => item.url == page)
 // }
 
 export async function getCurrentPage(): Promise<string> {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if(tab && tab.url) {
-        return normalizeUrl(tab.url);
-    }
-    return "";
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab && tab.url) {
+    return normalizeUrl(tab.url);
+  }
+  return "";
 }
 
 // export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {

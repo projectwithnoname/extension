@@ -12,7 +12,6 @@ type FilterAction =
   | { type: "SET_SORT"; payload: FilterState["sortBy"] }
   | { type: "RESET_FILTERS" };
 
-
 export const initialFilterState: FilterState = {
   searchTerm: "",
   scope: "all",

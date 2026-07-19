@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const HighlightItem = () => {
-  return (
-    <div>HighlightItem</div>
-  )
-}
+  return <div>HighlightItem</div>;
+};
 
-export default HighlightItem
+export default HighlightItem;

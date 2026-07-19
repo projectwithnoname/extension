@@ -30,14 +30,11 @@ export interface HighlightResult {
   context: string;
 }
 
-const getPageTitle = (): string =>
-{
+const getPageTitle = (): string => {
   return document.title;
 };
 
-const getPageFavicon = (): string =>
-{
-
+const getPageFavicon = (): string => {
   return `https://www.google.com/s2/favicons?sz=64&domain_url=${location.href}`;
 };
 

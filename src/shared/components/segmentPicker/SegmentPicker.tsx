@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
-import './Styles.scss'
+import React, { useState } from "react";
+import "./Styles.scss";
 
 type SegmentPickerProps = {
   children?: React.ReactNode;
-}
+};
 
-const SegmentPicker = ({ children }: SegmentPickerProps) =>
-{
+const SegmentPicker = ({ children }: SegmentPickerProps) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
 
   return (
     <div className="segmentPicker">
-      {React.Children.map(children, (child, index) =>
-      {
-        if (!React.isValidElement(child))
-        {
+      {React.Children.map(children, (child, index) => {
+        if (!React.isValidElement(child)) {
           return child;
         }
 
@@ -31,7 +28,7 @@ const SegmentPicker = ({ children }: SegmentPickerProps) =>
         }}
       />
     </div>
-  )
-}
+  );
+};
 
-export default SegmentPicker
+export default SegmentPicker;

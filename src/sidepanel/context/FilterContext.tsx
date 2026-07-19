@@ -15,9 +15,8 @@ interface FilterContextValue {
 
 const FilterContext = createContext<FilterContextValue | null>(null);
 
-
 export const getDefaultScope = (viewId: ViewId): FilterScope => {
-  if (viewId === "page")    {
+  if (viewId === "page") {
     return "page";
   }
 
@@ -25,25 +24,24 @@ export const getDefaultScope = (viewId: ViewId): FilterScope => {
 };
 
 export const FilterProvider = ({ children, activeView }: { children: ReactNode; activeView: ViewId }) => {
-    const [state, dispatch] = useReducer(filterReducer, {
-        ...initialFilterState, scope: getDefaultScope(activeView)
-    })
+  const [state, dispatch] = useReducer(filterReducer, {
+    ...initialFilterState,
+    scope: getDefaultScope(activeView),
+  });
 
-
-     const value = useMemo(() => ({
-        state,
-        dispatch,
-        setSearchTerm: (value: string) => dispatch({ type: filterActions.SET_SEARCH_TERM, payload: value }),
-        setScope: (value: FilterScope) => dispatch({ type: filterActions.SET_SCOPE, payload: value }),
-        setSort: (value: FilterState["sortBy"]) => dispatch({ type: filterActions.SET_SORT, payload: value }),
-        resetFilters: () => dispatch({ type: filterActions.RESET_FILTERS }),
-    }), [state]);
-    return (
-        <FilterContext.Provider value={value}>
-            {children}
-        </FilterContext.Provider>
-    )
-}
+  const value = useMemo(
+    () => ({
+      state,
+      dispatch,
+      setSearchTerm: (value: string) => dispatch({ type: filterActions.SET_SEARCH_TERM, payload: value }),
+      setScope: (value: FilterScope) => dispatch({ type: filterActions.SET_SCOPE, payload: value }),
+      setSort: (value: FilterState["sortBy"]) => dispatch({ type: filterActions.SET_SORT, payload: value }),
+      resetFilters: () => dispatch({ type: filterActions.RESET_FILTERS }),
+    }),
+    [state],
+  );
+  return <FilterContext.Provider value={value}>{children}</FilterContext.Provider>;
+};
 
 export const useFilters = () => {
   const context = useContext(FilterContext);

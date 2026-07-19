@@ -9,16 +9,13 @@ import Page from "./views/Page";
 import Tree from "./views/Tree";
 import { useActivePage } from "./hooks/useActivePage";
 import { ThemeProvider } from "./context/ThemeContext";
-import type {ViewId} from "../shared/types";
+import type { ViewId } from "../shared/types";
 import { FilterProvider } from "./context/FilterContext";
 
-const HighlightList = () =>
-{
+const HighlightList = () => {
   const { highlights, loading, updateNote, deleteHighlight } = useHighlights();
 
-
-  if (loading)
-  {
+  if (loading) {
     return <p>Loading…</p>;
   }
 
@@ -27,9 +24,7 @@ const HighlightList = () =>
       {highlights.map((highlight) => (
         <div key={highlight.id}>
           <span>{highlight.text}</span>
-          <button onClick={() => updateNote(highlight.id, `edited ${Date.now()}`)}>
-            Edit note
-          </button>
+          <button onClick={() => updateNote(highlight.id, `edited ${Date.now()}`)}>Edit note</button>
           <button onClick={() => deleteHighlight(highlight.id)}>Delete</button>
         </div>
       ))}
@@ -37,15 +32,13 @@ const HighlightList = () =>
   );
 };
 
-
 const views: Record<ViewId, ComponentType> = {
   page: Page,
   shared: Shared,
-  tree: Tree
+  tree: Tree,
 };
 
-const SidePanel = () =>
-{
+const SidePanel = () => {
   const [activeView, setActiveView] = useState<ViewId>("page");
 
   const ActiveComponent = views[activeView];

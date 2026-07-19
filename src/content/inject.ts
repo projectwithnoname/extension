@@ -409,10 +409,8 @@ export const markHighlightHasNote = (id: string) => {
   syncNoteMarkerColor(marker);
 };
 
-export const clearHighlightNoteMarker = (id: string) =>
-{
-  document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`).forEach((span) =>
-  {
+export const clearHighlightNoteMarker = (id: string) => {
+  document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`).forEach((span) => {
     delete span.dataset.hasNote;
     span.style.removeProperty("--note-marker-color");
   });
@@ -518,8 +516,7 @@ export const loadPageHighlights = (): Promise<Highlight[]> => {
   });
 };
 
-interface StorageSyncCallback
-{
+interface StorageSyncCallback {
   (pageHighlights: Highlight[]): void;
 }
 
@@ -528,23 +525,17 @@ interface StorageSyncCallback
 // so an echo of our OWN write (we mutate the DOM, send a message, then receive
 // our own onChanged) is a harmless no-op. Returns a teardown that removes the
 // listener.
-export const setupStorageSync = (onSync: StorageSyncCallback): (() => void) =>
-{
+export const setupStorageSync = (onSync: StorageSyncCallback): (() => void) => {
   let currentUrl: string;
-  try
-  {
+  try {
     currentUrl = normalizeUrl(location.href);
-  }
-  catch
-  {
+  } catch {
     // Unsupported page (e.g. about:blank) — nothing to sync.
     return () => {};
   }
 
-  const handleChange = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) =>
-  {
-    if (area !== "local" || !changes.highlights)
-    {
+  const handleChange = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) => {
+    if (area !== "local" || !changes.highlights) {
       return;
     }
 
@@ -559,41 +550,33 @@ export const setupStorageSync = (onSync: StorageSyncCallback): (() => void) =>
     const newById = new Map(newList.map((highlight) => [highlight.id, highlight]));
 
     // Deletions: in old, gone from new.
-    oldById.forEach((_unused, id) =>
-    {
-      if (!newById.has(id))
-      {
+    oldById.forEach((_unused, id) => {
+      if (!newById.has(id)) {
         removeHighlight(id);
       }
     });
 
-    newById.forEach((next, id) =>
-    {
+    newById.forEach((next, id) => {
       const prev = oldById.get(id);
 
       // Additions: new highlight on this page (e.g. created in another tab).
       // reapplyHighlight is a no-op if the span already exists.
-      if (!prev)
-      {
+      if (!prev) {
         reapplyHighlight(next);
         return;
       }
 
       // Color / style change.
-      if (prev.color !== next.color || prev.style !== next.style)
-      {
+      if (prev.color !== next.color || prev.style !== next.style) {
         restyleHighlight(id, next.color, next.style ?? "default");
       }
 
       // Note added / removed.
       const hadNote = Boolean(prev.note);
       const hasNote = Boolean(next.note);
-      if (!hadNote && hasNote)
-      {
+      if (!hadNote && hasNote) {
         markHighlightHasNote(id);
-      }
-      else if (hadNote && !hasNote)
-      {
+      } else if (hadNote && !hasNote) {
         clearHighlightNoteMarker(id);
       }
     });

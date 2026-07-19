@@ -4,26 +4,18 @@ import type { Highlight } from "../../shared/types";
 import { sendUpdateHighlight, sendUpdateNote, sendDelete } from "../../shared/messaging";
 import { HighlightsContext, type HighlightsContextValue } from "../hooks/useHighlights";
 
-export const HighlightsProvider = ({ children }: { children: ReactNode }) =>
-{
+export const HighlightsProvider = ({ children }: { children: ReactNode }) => {
   const [highlights, setHighlights] = useState<Highlight[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() =>
-  {
-    chrome.storage.local.get("highlights", (result: { highlights?: Highlight[] }) =>
-    {
+  useEffect(() => {
+    chrome.storage.local.get("highlights", (result: { highlights?: Highlight[] }) => {
       setHighlights(result.highlights ?? []);
       setLoading(false);
     });
 
-    const handleChange = (
-      changes: { [key: string]: chrome.storage.StorageChange },
-      area: string,
-    ) =>
-    {
-      if (area === "local" && changes.highlights)
-      {
+    const handleChange = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) => {
+      if (area === "local" && changes.highlights) {
         setHighlights((changes.highlights.newValue as Highlight[]) ?? []);
       }
     };
