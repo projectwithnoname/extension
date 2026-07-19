@@ -1,7 +1,7 @@
 @use "../shared/styles/index";
 
 #sidePanelContainer {
-  height: 100%;
+  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -9,11 +9,13 @@
   position: relative;
   background-color: var(--alpha-silver-10);
 
-  .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 1rem;
-    border-top: 1px solid var(--alpha-silver-60);
-  }
+}
+
+//temp for settings only, will get removed
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 1rem;
+  border-top: 1px solid var(--alpha-silver-60);
 }

@@ -12,7 +12,6 @@ const readActiveUrl = async (): Promise<string> =>
     }
     catch
     {
-      // normalizeUrl throws on non-URL strings (chrome://, about:blank, …)
       return tab.url;
     }
   }

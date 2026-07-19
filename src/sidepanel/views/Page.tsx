@@ -4,6 +4,7 @@ import { useHighlights } from "../context/useHighlights"
 import { useActivePage } from "../hooks/useActivePage"
 import {filterByDomain} from "../../shared/utils"
 import type {Highlight} from "../../shared/types"
+import { useTheme } from '../context/ThemeContext';
 
 const Page = () => {
   const currentPage = useActivePage();
@@ -11,6 +12,9 @@ const Page = () => {
 
   console.log(highlights);
   const filteredHighlights = filterByDomain(currentPage, highlights );
+
+  //temp, not needed
+  const { theme, toggleTheme } = useTheme();
 
 
 
@@ -28,6 +32,12 @@ const Page = () => {
       ) : (
         <p>No highlights found.</p>
       )}
+
+        <footer className="footer">
+          <button onClick={toggleTheme}>
+            {theme}
+          </button>
+        </footer>
     </div>
   )
 }

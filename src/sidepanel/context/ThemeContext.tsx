@@ -30,6 +30,21 @@ export const ThemeProvider = ({children}:{ children: ReactNode }) => {
         }
         storedTheme();
     }, []);
+
+    useEffect(() => {
+        const root = window.document.documentElement;
+        
+        chrome.storage.local.set({ theme });
+
+        let activeTheme = theme;
+        if (theme === "system") {
+            const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            activeTheme = systemPrefersDark ? "dark" : "light";
+        }
+
+        root.classList.remove("light", "dark");
+        root.classList.add(activeTheme);
+    }, [theme]);
     
     return (
         <ThemeContext.Provider value={{ theme, setTheme }}>
@@ -46,7 +61,11 @@ export const useTheme = () => {
     }
 
     const toggleTheme = () => {
-        context.setTheme(prev => (prev === "dark" ? "light" : "dark"));
+        context.setTheme(prev => {
+            if (prev === "system") return "light";
+            if (prev === "light") return "dark";
+            return "system";
+        });
     }
 
     return {theme: context.theme, setTheme: context.setTheme, toggleTheme};
