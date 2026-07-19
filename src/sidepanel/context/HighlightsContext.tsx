@@ -35,7 +35,6 @@ export const HighlightsProvider = ({ children }: { children: ReactNode }) =>
   const value: HighlightsContextValue = {
     highlights,
     loading,
-    // Mutators only send messages. The onChanged event above is what updates
     updateHighlight: (id, color, style) => sendUpdateHighlight({ id, color, style }),
     updateNote: (id, note) => sendUpdateNote({ id, note }),
     deleteHighlight: (id) => sendDelete(id),

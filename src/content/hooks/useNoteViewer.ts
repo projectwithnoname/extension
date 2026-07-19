@@ -7,7 +7,7 @@ interface UseNoteViewerArgs {
 
 /**
  *
- * Owns the hover note popover: its state, the delayed-hide timer, and the
+ * @description Owns the hover note popover: its state, the delayed-hide timer, and the
  * setupNoteHover subscription which reads the latest notes via notesRef.
  */
 export default function useNoteViewer({ notesRef }: UseNoteViewerArgs) {
@@ -54,10 +54,6 @@ export default function useNoteViewer({ notesRef }: UseNoteViewerArgs) {
 
       clearHideTimer();
       setViewerState((current) => {
-        // Already showing this highlight's note: keep the popover put. Hover
-        // fires per span (a highlight can be many spans), so re-setting here
-        // would make the note jump line to line and re-render away any inline
-        // edit in progress.
         if (current.visible && current.highlightId === highlightId) {
           return current;
         }

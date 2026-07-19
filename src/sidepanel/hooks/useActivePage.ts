@@ -19,9 +19,9 @@ const readActiveUrl = async (): Promise<string> =>
   return "";
 };
 
-// Tracks the URL of the active tab and keeps it current while the panel is open.
-// Listens directly to chrome.tabs events (they fire in the side panel context),
-// so no background/service-worker round-trip is needed.
+/**
+ * @description Tracks the URL of the active tab and keeps it current while the panel is open. Listens directly to chrome.tabs events 
+ */
 export const useActivePage = (): string =>
 {
   const [activePage, setActivePage] = useState("");

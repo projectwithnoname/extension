@@ -8,6 +8,7 @@ import Shared from "./views/Shared";
 import Page from "./views/Page";
 import Tree from "./views/Tree";
 import { useActivePage } from "./hooks/useActivePage";
+import { ThemeProvider } from "./context/ThemeContext";
 
 const HighlightList = () =>
 {
@@ -53,12 +54,14 @@ const SidePanel = () =>
 
   return (
     <div id="sidePanelContainer">
-      <HighlightsProvider>
-        <Header activeView={activeView} onSelect={setActiveView} />
-        <ActiveComponent />
-        {/* <p>Current page: {currentPage}</p> */}
-        {/* <HighlightList /> */}
-      </HighlightsProvider>
+      <ThemeProvider>
+        <HighlightsProvider>
+          <Header activeView={activeView} onSelect={setActiveView} />
+          <ActiveComponent />
+          {/* <p>Current page: {currentPage}</p> */}
+          {/* <HighlightList /> */}
+        </HighlightsProvider>
+      </ThemeProvider>
     </div>
   );
 };

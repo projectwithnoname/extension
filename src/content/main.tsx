@@ -35,12 +35,6 @@ shadowRoot.appendChild(mountPoint);
 
 const HighlighterRoot = () => {
   const notes = useHighlightNotes();
-
-  /*
-   * Order matters: useNoteViewer must be created before useToolbar, because the
-   * toolbar closes the viewer (via hideImmediately) whenever a fresh selection
-   * raises it. The two popovers must never coexist.
-   */
   const viewer = useNoteViewer({ notesRef: notes.notesRef });
   const toolbar = useToolbar({ onBeforeShow: viewer.hideImmediately });
 
