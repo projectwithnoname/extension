@@ -1,7 +1,8 @@
 import Icon from "../../../shared/components/icon/Icon";
 import SegmentPicker from "../../../shared/components/segmentPicker/SegmentPicker";
 import SegmentPickerItem from "../../../shared/components/segmentPicker/SegmentPickeritem";
-import type { ViewId } from "../../SidePanel";
+import type {ViewId} from "../../../shared/types";
+import { useFilters } from "../../context/FilterContext";
 import "./Styles.scss";
 
 interface HeaderProps
@@ -18,6 +19,7 @@ const tabs: { id: ViewId; label: string }[] = [
 
 const Header = ({ activeView, onSelect }: HeaderProps) =>
 {
+  const { state,setScope} = useFilters();
   return (
     <header id="sidePanelHeader">
       <section className="tabs">
@@ -35,12 +37,12 @@ const Header = ({ activeView, onSelect }: HeaderProps) =>
       <section className="sort">
         {activeView === "page" && (
           <SegmentPicker>
-            <SegmentPickerItem label="This page" />
-            <SegmentPickerItem label="This domain" />
+            <SegmentPickerItem label="This page" onMouseUp={() => setScope(state.scope === "page" ? "domain" : "page")} />
+            <SegmentPickerItem label="This domain" onMouseUp={() => setScope("domain")} />
           </SegmentPicker>
         )}
 
-        <div id="search">
+        <div id="search" onClick={() => setScope(state.scope === "page" ? "domain" : "page")}>
           <div className="inputContainer">
           <Icon name="search-icon" size={14} />
           <input placeholder="Search..." type="text" name="search-box" />

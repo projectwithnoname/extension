@@ -15,3 +15,7 @@ export interface Highlight {
   title?: string;
   favicon?: string;
 }
+
+export type ViewId = "page" | "shared" | "tree";
+
+export type FilterScope = "page" | "domain" | "all";

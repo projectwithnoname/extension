@@ -9,6 +9,8 @@ import Page from "./views/Page";
 import Tree from "./views/Tree";
 import { useActivePage } from "./hooks/useActivePage";
 import { ThemeProvider } from "./context/ThemeContext";
+import type {ViewId} from "../shared/types";
+import { FilterProvider } from "./context/FilterContext";
 
 const HighlightList = () =>
 {
@@ -35,7 +37,6 @@ const HighlightList = () =>
   );
 };
 
-export type ViewId = "page" | "shared" | "tree";
 
 const views: Record<ViewId, ComponentType> = {
   page: Page,
@@ -49,15 +50,14 @@ const SidePanel = () =>
 
   const ActiveComponent = views[activeView];
 
-  // const currentPage = useActivePage();
-  // console.log("Current page:", currentPage);
-
   return (
     <div id="sidePanelContainer">
       <ThemeProvider>
         <HighlightsProvider>
-          <Header activeView={activeView} onSelect={setActiveView} />
-          <ActiveComponent />
+          <FilterProvider activeView={activeView}>
+            <Header activeView={activeView} onSelect={setActiveView} />
+            <ActiveComponent />
+          </FilterProvider>
           {/* <p>Current page: {currentPage}</p> */}
           {/* <HighlightList /> */}
         </HighlightsProvider>
