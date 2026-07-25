@@ -8,6 +8,15 @@
   gap: 1rem;
   position: relative;
   background-color: var(--alpha-white-90);
+
+  .pageView {
+    .highlightList {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0 0.5rem;
+    }
+  }
 }
 
 //temp for settings only, will get removed

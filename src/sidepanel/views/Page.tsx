@@ -5,6 +5,7 @@ import { filterByPage, filterByDomain } from "../../shared/utils";
 import type { Highlight } from "../../shared/types";
 import { useTheme } from "../context/ThemeContext";
 import { useFilters } from "../context/FilterContext";
+import HighlightItem from "../components/highlightItem/HighlightItem";
 
 const Page = () => {
   const currentPage = useActivePage();
@@ -24,18 +25,16 @@ const Page = () => {
   }, [state.scope, currentPage, highlights]);
 
   return (
-    <div>
-      <h2>Highlights tested</h2>
-
-      {relevantHighlights.length > 0 ? (
-        relevantHighlights.map((highlight: Highlight) => (
-          <div>
-            <p>{highlight.text}</p>
-          </div>
-        ))
-      ) : (
-        <p>No highlights found.</p>
-      )}
+    <div className="pageView">
+      <div className="highlightList">
+        {relevantHighlights.length > 0 ? (
+          relevantHighlights.map((highlight: Highlight) => (
+              <HighlightItem {...highlight} />
+          ))
+        ) : (
+          <p>No highlights found.</p>
+        )}
+      </div>
 
       <footer className="footer">
         <button onClick={toggleTheme}>{theme}</button>
