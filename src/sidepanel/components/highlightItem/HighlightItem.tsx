@@ -2,15 +2,21 @@
 import "./Style.scss";
 import type { Highlight } from "../../../shared/types";
 import Button from "../../../shared/components/button/Button";
+import { NavigateToHiglight } from "../../../shared/messaging";
 interface HighlightItemProps extends Highlight {
   deleteHighlight?: (id: string) => void;
 }
 
 const HighlightItem = (props: HighlightItemProps) => {
+
+  const handleNavigate = () => {
+    NavigateToHiglight({id:props.id , url:props.url});
+  }
+
   return <div className="highlightItem">
     <div className="header">
       <img src={props.favicon} alt="Favicon" className="favicon" />
-        <h3>{props.title}</h3>
+        <h3 onClick={handleNavigate}>{props.title}</h3>
     </div>
     <p>{props.text}</p>
     {

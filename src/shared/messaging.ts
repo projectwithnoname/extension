@@ -18,6 +18,11 @@ export interface DeleteHighlightPayload {
   id: string;
 }
 
+interface NavigateToHiglightPayload {
+  id : string,
+  url: string
+}
+
 export type ExtensionMessage =
   | { type: "ACTION_CLICKED"; payload: CreateHighlightPayload }
   | { type: "UPDATE_HIGHLIGHT"; payload: UpdateHighlightPayload }
@@ -75,3 +80,12 @@ export const sendUpdateNote = (payload: UpdateNotePayload) => {
 export const sendDelete = (id: string) => {
   chrome.runtime.sendMessage({ type: "DELETE_HIGHLIGHT", payload: { id } });
 };
+
+
+export const NavigateToHiglight = (payload: NavigateToHiglightPayload) => {
+  chrome.runtime.sendMessage({type: "NAVIGATE_TO_HIGHLIGHT", payload})
+}
+
+// export const loadedTab = (id: string) => {
+//   chrome.tabs.sendMessage({type: "GO_TO_HIGHLIGHT", id})
+// }

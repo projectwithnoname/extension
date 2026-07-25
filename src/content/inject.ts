@@ -662,3 +662,23 @@ export const getSelectedHighlightId = (): string | null => {
   const span = el?.closest("span[data-highlight-id]");
   return span?.getAttribute("data-highlight-id") ?? null;
 };
+
+export const navigateToHighlight = (id: string) => {
+  const spans = document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`);
+  const span = spans[0];
+
+  if (!span) {
+    return;
+  }
+
+  span.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+};
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "SCROLL_TO_HIGHLIGHT") {
+    navigateToHighlight(message.payload?.id);
+  }
+});
