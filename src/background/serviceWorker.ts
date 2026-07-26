@@ -79,26 +79,6 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-// chrome.runtime.onMessage.addListener((message) => {
-//   if (message.type === "NAVIGATE_TO_HIGHLIGHT") {
-//     const { url, id } = message.payload;
-
-//     chrome.tabs.query({}, (tabs) => {
-//     // Try to find a matching tab
-//     const existingTab = tabs.find(tab => tab.url && tab.url.includes(url));
-
-//     if (existingTab) {
-//       // Tab exists → focus it
-//       chrome.tabs.update(existingTab.id, { active: true });
-//       chrome.windows.update(existingTab.windowId, { focused: true });
-//     } else {
-//       // Tab doesn't exist → create it
-//       chrome.tabs.create({ url });
-//     }
-//   });
-//   }
-// });
-
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "NAVIGATE_TO_HIGHLIGHT") {
     const { url, id } = message.payload;

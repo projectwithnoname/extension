@@ -10,7 +10,7 @@ export interface Highlight {
   url: string;
   context: string;
   color: string;
-  style?: HighlightStyle;
+  style: HighlightStyle;
   note?: string;
   title?: string;
   favicon?: string;
