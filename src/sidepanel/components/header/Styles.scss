@@ -20,7 +20,7 @@
       }
 
       &.active {
-        color: var(--brand-orange-secondary);
+        color: var(--brand-purple);
 
         &::after {
           content: "";
@@ -29,7 +29,7 @@
           left: 10%;
           right: 10%;
           height: 2px;
-          background-color: var(--brand-orange-secondary);
+          background-color: var(--brand-purple);
           border-top-left-radius: 8px;
           border-top-right-radius: 8px;
         }
