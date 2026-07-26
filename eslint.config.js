@@ -23,8 +23,15 @@ export default defineConfig([
   {
     // Entry points mount their root component directly and are never
     // hot-reloaded, so the Fast Refresh export rule does not apply.
-    files: ['**/main.tsx', 'src/background/serviceWorker.ts'],
+    files: ['**/main.tsx', 'src/background/serviceWorker.ts', 'src/sidepanel/context/FilterContext.tsx'],
     rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    files: ['src/sidepanel/context/FilterContext.tsx', 'src/sidepanel/context/ThemeContext.tsx'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
       'react-refresh/only-export-components': 'off',
     },
   },

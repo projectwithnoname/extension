@@ -27,7 +27,7 @@ const Header = ({ activeView, onSelect }: HeaderProps) => {
       setSearchTerm(draft.length > 2 ? draft : "");
     }, 200);
     return () => clearTimeout(handle);
-  }, [draft]);
+  }, [draft, setSearchTerm]);
 
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDraft(e.currentTarget.value);
@@ -76,7 +76,14 @@ const Header = ({ activeView, onSelect }: HeaderProps) => {
             />
 
             {draft && (
-              <Button size="xs" iconOnly palette="secondary" type="tonal" onClick={handleClearSearch} aria-label="Clear search">
+              <Button
+                size="xs"
+                iconOnly
+                palette="secondary"
+                type="tonal"
+                onClick={handleClearSearch}
+                aria-label="Clear search"
+              >
                 <Icon name="close" size={8} />
               </Button>
             )}

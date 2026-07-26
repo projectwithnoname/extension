@@ -30,9 +30,7 @@ const Page = () => {
     <div className="pageView">
       <div className="highlightList">
         {relevantHighlights.length > 0 ? (
-          relevantHighlights.map((highlight: Highlight, index) => (
-              <HighlightItem key={index} {...highlight} />
-          ))
+          relevantHighlights.map((highlight: Highlight, index) => <HighlightItem key={index} {...highlight} />)
         ) : (
           <p>No highlights found.</p>
         )}

@@ -120,11 +120,9 @@ export function searchHighlights(list: Highlight[], query: string): Highlight[] 
   }
 
   return list.filter((highlight) => {
-    const searchableValues = [
-      highlight.title,
-      highlight.note,
-      highlight.text,
-    ].filter((value): value is string => Boolean(value));
+    const searchableValues = [highlight.title, highlight.note, highlight.text].filter((value): value is string =>
+      Boolean(value),
+    );
 
     return searchableValues.some((value) => value.toLowerCase().includes(normalizedQuery));
   });

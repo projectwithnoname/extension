@@ -7,19 +7,21 @@ chrome.runtime.onInstalled.addListener(() => {
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));
 
 const sendScrollMessage = (tabId: number, highlightId: string, attempt = 0) => {
-  chrome.tabs.sendMessage(tabId, {
-    type: "SCROLL_TO_HIGHLIGHT",
-    payload: { id: highlightId },
-  }).catch((error: Error) => {
-    if (attempt < 3 && error.message?.includes("Could not establish connection")) {
-      window.setTimeout(() => {
-        sendScrollMessage(tabId, highlightId, attempt + 1);
-      }, 250);
-      return;
-    }
+  chrome.tabs
+    .sendMessage(tabId, {
+      type: "SCROLL_TO_HIGHLIGHT",
+      payload: { id: highlightId },
+    })
+    .catch((error: Error) => {
+      if (attempt < 3 && error.message?.includes("Could not establish connection")) {
+        window.setTimeout(() => {
+          sendScrollMessage(tabId, highlightId, attempt + 1);
+        }, 250);
+        return;
+      }
 
-    console.warn("Could not reach content script", error);
-  });
+      console.warn("Could not reach content script", error);
+    });
 };
 
 chrome.runtime.onMessage.addListener((message) => {
@@ -110,4 +112,3 @@ chrome.runtime.onMessage.addListener((message) => {
     });
   }
 });
-

@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useReducer, useState } from "react";
+import { createContext, useContext, useMemo, useReducer } from "react";
 import type { ReactNode } from "react";
 import type { ViewId, FilterScope } from "../../shared/types";
 import { filterReducer, initialFilterState, type FilterState } from "../reducer/filterReducer";
