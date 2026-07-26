@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useHighlights } from "../hooks/useHighlights";
 import { useActivePage } from "../hooks/useActivePage";
-import { filterByPage, filterByDomain } from "../../shared/utils";
+import { filterByPage, filterByDomain, searchHighlights } from "../../shared/utils";
 import type { Highlight } from "../../shared/types";
 import { useTheme } from "../context/ThemeContext";
 import { useFilters } from "../context/FilterContext";
@@ -15,21 +15,23 @@ const Page = () => {
   const { theme, toggleTheme } = useTheme();
 
   const relevantHighlights = useMemo(() => {
+    let scopedHighlights: Highlight[] = highlights;
+
     if (state.scope === "page") {
-      return filterByPage(currentPage, highlights);
+      scopedHighlights = filterByPage(currentPage, highlights);
     } else if (state.scope === "domain") {
-      return filterByDomain(currentPage, highlights);
-    } else {
-      return highlights;
+      scopedHighlights = filterByDomain(currentPage, highlights);
     }
-  }, [state.scope, currentPage, highlights]);
+
+    return searchHighlights(scopedHighlights, state.searchTerm);
+  }, [state.scope, currentPage, highlights, state.searchTerm]);
 
   return (
     <div className="pageView">
       <div className="highlightList">
         {relevantHighlights.length > 0 ? (
-          relevantHighlights.map((highlight: Highlight) => (
-              <HighlightItem {...highlight} />
+          relevantHighlights.map((highlight: Highlight, index) => (
+              <HighlightItem key={index} {...highlight} />
           ))
         ) : (
           <p>No highlights found.</p>

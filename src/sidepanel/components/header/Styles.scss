@@ -1,6 +1,7 @@
 #sidePanelHeader {
   padding-top: 1rem;
   border-bottom: 1px solid var(--alpha-night-10);
+  --fill-icon-color: var(--black);
 
   .tabs {
     display: flex;
@@ -48,6 +49,12 @@
       align-items: center;
       gap: 0.5rem;
       padding: 3px;
+
+      .icon {
+        --fill-icon-color: var(--black);
+      }
+        
+
 
       .inputContainer {
         display: flex;

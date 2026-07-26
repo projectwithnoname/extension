@@ -111,3 +111,21 @@ export function filterByDomain(domain: string, list: Highlight[]): Highlight[] {
     }
   });
 }
+
+export function searchHighlights(list: Highlight[], query: string): Highlight[] {
+  const normalizedQuery = query.trim().toLowerCase();
+
+  if (!normalizedQuery) {
+    return list;
+  }
+
+  return list.filter((highlight) => {
+    const searchableValues = [
+      highlight.title,
+      highlight.note,
+      highlight.text,
+    ].filter((value): value is string => Boolean(value));
+
+    return searchableValues.some((value) => value.toLowerCase().includes(normalizedQuery));
+  });
+}
