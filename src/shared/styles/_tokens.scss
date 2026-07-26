@@ -1,21 +1,14 @@
-// Semantic color tokens shared across the side panel, options page, and the
-// content-script toolbar.
-//
-// `:root` applies in the side panel/options documents. `:host` applies inside the
-// content script's closed shadow root. CSS custom properties inherit across the
-// shadow boundary, so the toolbar picks these up through `:host`. Targeting both
-// selectors keeps a single source of truth — `:host` matches nothing in a normal
-// document and `:root` matches nothing inside a shadow tree, so each context only
-// ever sees the rule that applies to it.
-
 //#151b23 github dark bg
 
 :root,
 :host {
-  // Primitive palette — raw values, not consumed directly by components.
-
-  --temp-purple: #5943b6;
-  --temp-purple-secondary: #a989f5;
+  --brand-purple: #5943b6;
+  --brand-purple-secondary: #a989f5;
+  --brand-orange-primary: #e24329;
+  --brand-orange-secondary: #fc6d26;
+  --brand-orange-tertiary: #fca326;
+  --white: #ffffff;
+  --black: #000;
 
   --color-neutral-900: #282828;
   --color-neutral-800: #424242;
@@ -127,4 +120,60 @@
   --body-xxs-semibold-italic: italic var(--font-weight-semibold) 0.625rem / 0.75rem var(--font-family-sans-serif);
   --body-xxs-bold: var(--font-weight-bold) 0.625rem / 0.75rem var(--font-family-sans-serif);
   --body-xxs-bold-italic: italic var(--font-weight-bold) 0.625rem / 0.75rem var(--font-family-sans-serif);
+}
+
+html.dark {
+  --brand-purple: #8b74e8;
+  --brand-purple-secondary: #c5aaff;
+
+  --brand-orange-primary: #ff6b52;
+  --brand-orange-secondary: #ff8b4d;
+  --brand-orange-tertiary: #ffc266;
+
+  --white: #000000;
+  --black: #fff;
+
+  --color-neutral-900: #f5f5f5;
+  --color-neutral-800: #e9e9e9;
+  --color-neutral-700: #d1d1d1;
+  --color-neutral-600: #b3b3b3;
+  --color-neutral-500: #949494;
+  --color-neutral-400: #666;
+  --color-neutral-300: #424242;
+  --color-neutral-200: #303030;
+  --color-neutral-100: #202020;
+  --color-neutral-0: #121212;
+
+  --alpha-night-5: rgba(255, 255, 255, 0.05);
+  --alpha-night-10: rgba(255, 255, 255, 0.1);
+  --alpha-night-20: rgba(255, 255, 255, 0.2);
+  --alpha-night-30: rgba(255, 255, 255, 0.3);
+  --alpha-night-40: rgba(255, 255, 255, 0.4);
+  --alpha-night-50: rgba(255, 255, 255, 0.5);
+  --alpha-night-60: rgba(255, 255, 255, 0.6);
+  --alpha-night-70: rgba(255, 255, 255, 0.7);
+  --alpha-night-80: rgba(255, 255, 255, 0.8);
+  --alpha-night-90: rgba(255, 255, 255, 0.9);
+
+  --alpha-silver-5: hsla(0, 0%, 25%, 0.05);
+  --alpha-silver-10: hsla(0, 0%, 25%, 0.1);
+  --alpha-silver-20: hsla(0, 0%, 25%, 0.2);
+  --alpha-silver-30: hsla(0, 0%, 25%, 0.3);
+  --alpha-silver-40: hsla(0, 0%, 25%, 0.4);
+  --alpha-silver-50: hsla(0, 0%, 25%, 0.5);
+  --alpha-silver-60: hsla(0, 0%, 25%, 0.6);
+  --alpha-silver-70: hsla(0, 0%, 25%, 0.7);
+  --alpha-silver-80: hsla(0, 0%, 25%, 0.8);
+  --alpha-silver-90: hsla(0, 0%, 25%, 0.9);
+
+  --alpha-white-5: rgba(40, 40, 40, 0.05);
+  --alpha-white-10: rgba(40, 40, 40, 0.1);
+  --alpha-white-20: rgba(40, 40, 40, 0.2);
+  --alpha-white-30: rgba(40, 40, 40, 0.3);
+  --alpha-white-40: rgba(40, 40, 40, 0.4);
+  --alpha-white-50: rgba(40, 40, 40, 0.5);
+  --alpha-white-60: rgba(40, 40, 40, 0.6);
+  --alpha-white-70: rgba(40, 40, 40, 0.7);
+  --alpha-white-80: rgba(40, 40, 40, 0.8);
+  --alpha-white-90: rgba(40, 40, 40, 0.9);
 }

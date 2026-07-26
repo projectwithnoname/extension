@@ -6,14 +6,12 @@
   justify-content: center;
   flex-shrink: 0;
   color: var(--fill-icon-color);
-
-  // Let clicks fall through to the parent (e.g. a Button), otherwise the
-  // injected <svg> becomes the event target and the button's onClick is missed.
   pointer-events: none;
 
   svg {
     width: 100%;
     height: 100%;
     display: block;
+    fill: var(--fill-icon-color);
   }
 }

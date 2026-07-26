@@ -2,7 +2,7 @@ import "./Styles.scss";
 
 type ButtonType = "default" | "outline" | "tonal";
 type ButtonPalette = "primary" | "secondary";
-type ButtonSize = "sm" | "md" | "lg";
+type ButtonSize = "xs" | "sm" | "md" | "lg";
 
 interface ButtonProps {
   type?: ButtonType;

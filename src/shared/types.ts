@@ -10,6 +10,12 @@ export interface Highlight {
   url: string;
   context: string;
   color: string;
-  style?: HighlightStyle;
+  style: HighlightStyle;
   note?: string;
+  title?: string;
+  favicon?: string;
 }
+
+export type ViewId = "page" | "shared" | "tree";
+
+export type FilterScope = "page" | "domain" | "all";

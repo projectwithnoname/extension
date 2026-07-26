@@ -40,10 +40,10 @@ const Note = (props: NoteProps) => {
     }
 
     const frame = requestAnimationFrame(() => {
-      setNoteState({
-        ...noteState,
+      setNoteState((prev) => ({
+        ...prev,
         open: true,
-      });
+      }));
 
       const textarea = textareaRef.current;
       if (textarea) {
@@ -96,10 +96,11 @@ const Note = (props: NoteProps) => {
   };
 
   const handleValueChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setNoteState({
-      ...noteState,
-      value: event.target.value,
-    });
+    const { value } = event.target;
+    setNoteState((prev) => ({
+      ...prev,
+      value,
+    }));
   };
 
   return (
@@ -112,13 +113,13 @@ const Note = (props: NoteProps) => {
         onChange={handleValueChange}
       ></textarea>
       <div className="noteContainerActions">
-        <Button palette="secondary" type="default" size="md" onClick={onCancel}>
+        <Button palette="secondary" type="default" size="sm" onClick={onCancel}>
           Cancel
         </Button>
         <Button
           palette="primary"
           type="default"
-          size="md"
+          size="sm"
           disabled={noteState.value.trim() === ""}
           onClick={handleSave}
         >

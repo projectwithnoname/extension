@@ -20,6 +20,7 @@ import useToolbar from "./hooks/useToolbar";
 
 const host = document.createElement("div");
 host.id = "my-extension-root";
+host.style.setProperty("all", "initial", "important");
 document.body.appendChild(host);
 
 const shadowRoot = host.attachShadow({ mode: "closed" });
@@ -29,16 +30,11 @@ styleEl.textContent = styles;
 shadowRoot.appendChild(styleEl);
 
 const mountPoint = document.createElement("div");
+mountPoint.id = "extension-root";
 shadowRoot.appendChild(mountPoint);
 
 const HighlighterRoot = () => {
   const notes = useHighlightNotes();
-
-  /*
-   * Order matters: useNoteViewer must be created before useToolbar, because the
-   * toolbar closes the viewer (via hideImmediately) whenever a fresh selection
-   * raises it. The two popovers must never coexist.
-   */
   const viewer = useNoteViewer({ notesRef: notes.notesRef });
   const toolbar = useToolbar({ onBeforeShow: viewer.hideImmediately });
 

@@ -409,6 +409,13 @@ export const markHighlightHasNote = (id: string) => {
   syncNoteMarkerColor(marker);
 };
 
+export const clearHighlightNoteMarker = (id: string) => {
+  document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`).forEach((span) => {
+    delete span.dataset.hasNote;
+    span.style.removeProperty("--note-marker-color");
+  });
+};
+
 export const removeHighlight = (id: string) => {
   document.querySelectorAll(`span[data-highlight-id="${id}"]`).forEach((span) => {
     while (span.firstChild) {
@@ -418,8 +425,12 @@ export const removeHighlight = (id: string) => {
   });
 };
 
-const reapplyHighlight = (highlight: Highlight) => {
+export const reapplyHighlight = (highlight: Highlight) => {
   const { id, context, color, style } = highlight;
+
+  if (document.querySelector(`span[data-highlight-id="${id}"]`)) {
+    return;
+  }
 
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
   const textNodes: Text[] = [];
@@ -505,6 +516,78 @@ export const loadPageHighlights = (): Promise<Highlight[]> => {
   });
 };
 
+interface StorageSyncCallback {
+  (pageHighlights: Highlight[]): void;
+}
+
+// Reconcile the page DOM against a storage change. Diffs old vs new (scoped to
+// this page's URL) and applies only what changed. All mutators are idempotent,
+// so an echo of our OWN write (we mutate the DOM, send a message, then receive
+// our own onChanged) is a harmless no-op. Returns a teardown that removes the
+// listener.
+export const setupStorageSync = (onSync: StorageSyncCallback): (() => void) => {
+  let currentUrl: string;
+  try {
+    currentUrl = normalizeUrl(location.href);
+  } catch {
+    // Unsupported page (e.g. about:blank) — nothing to sync.
+    return () => {};
+  }
+
+  const handleChange = (changes: { [key: string]: chrome.storage.StorageChange }, area: string) => {
+    if (area !== "local" || !changes.highlights) {
+      return;
+    }
+
+    const oldList = ((changes.highlights.oldValue as Highlight[]) ?? []).filter(
+      (highlight) => highlight.url === currentUrl,
+    );
+    const newList = ((changes.highlights.newValue as Highlight[]) ?? []).filter(
+      (highlight) => highlight.url === currentUrl,
+    );
+
+    const oldById = new Map(oldList.map((highlight) => [highlight.id, highlight]));
+    const newById = new Map(newList.map((highlight) => [highlight.id, highlight]));
+
+    // Deletions: in old, gone from new.
+    oldById.forEach((_unused, id) => {
+      if (!newById.has(id)) {
+        removeHighlight(id);
+      }
+    });
+
+    newById.forEach((next, id) => {
+      const prev = oldById.get(id);
+
+      // Additions: new highlight on this page (e.g. created in another tab).
+      // reapplyHighlight is a no-op if the span already exists.
+      if (!prev) {
+        reapplyHighlight(next);
+        return;
+      }
+
+      // Color / style change.
+      if (prev.color !== next.color || prev.style !== next.style) {
+        restyleHighlight(id, next.color, next.style ?? "default");
+      }
+
+      // Note added / removed.
+      const hadNote = Boolean(prev.note);
+      const hasNote = Boolean(next.note);
+      if (!hadNote && hasNote) {
+        markHighlightHasNote(id);
+      } else if (hadNote && !hasNote) {
+        clearHighlightNoteMarker(id);
+      }
+    });
+
+    onSync(newList);
+  };
+
+  chrome.storage.onChanged.addListener(handleChange);
+  return () => chrome.storage.onChanged.removeListener(handleChange);
+};
+
 interface ShowNoteCallback {
   (x: number, y: number, highlightId: string): void;
 }
@@ -529,8 +612,21 @@ export const setupNoteHover = (showNote: ShowNoteCallback, hideNote: () => void)
       return;
     }
 
-    const rect = span.getBoundingClientRect();
-    showNote(rect.left + rect.width / 2, rect.top, id);
+    // A highlight can span several spans (one per text node/line). Anchor the
+    // note to the top of the whole block, centered horizontally, so it sits
+    // above the highlight instead of jumping to whichever span is hovered.
+    const spans = document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`);
+    let top = Infinity;
+    let left = Infinity;
+    let right = -Infinity;
+    spans.forEach((highlightSpan) => {
+      const spanRect = highlightSpan.getBoundingClientRect();
+      top = Math.min(top, spanRect.top);
+      left = Math.min(left, spanRect.left);
+      right = Math.max(right, spanRect.right);
+    });
+
+    showNote((left + right) / 2, top, id);
   };
 
   const handleOut = (event: MouseEvent) => {
@@ -566,3 +662,23 @@ export const getSelectedHighlightId = (): string | null => {
   const span = el?.closest("span[data-highlight-id]");
   return span?.getAttribute("data-highlight-id") ?? null;
 };
+
+export const navigateToHighlight = (id: string) => {
+  const spans = document.querySelectorAll<HTMLSpanElement>(`span[data-highlight-id="${id}"]`);
+  const span = spans[0];
+
+  if (!span) {
+    return;
+  }
+
+  span.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+};
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "SCROLL_TO_HIGHLIGHT") {
+    navigateToHighlight(message.payload?.id);
+  }
+});

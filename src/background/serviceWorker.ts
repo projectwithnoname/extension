@@ -6,9 +6,27 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));
 
+const sendScrollMessage = (tabId: number, highlightId: string, attempt = 0) => {
+  chrome.tabs
+    .sendMessage(tabId, {
+      type: "SCROLL_TO_HIGHLIGHT",
+      payload: { id: highlightId },
+    })
+    .catch((error: Error) => {
+      if (attempt < 3 && error.message?.includes("Could not establish connection")) {
+        window.setTimeout(() => {
+          sendScrollMessage(tabId, highlightId, attempt + 1);
+        }, 250);
+        return;
+      }
+
+      console.warn("Could not reach content script", error);
+    });
+};
+
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "ACTION_CLICKED") {
-    const { id, text, url, context, color, style, note } = message.payload;
+    const { id, text, url, context, color, style, note, title, favicon } = message.payload;
 
     const newHighlight: Highlight = {
       id,
@@ -19,6 +37,8 @@ chrome.runtime.onMessage.addListener((message) => {
       color,
       style,
       note,
+      title,
+      favicon,
     };
 
     chrome.storage.local.get("highlights", (result) => {
@@ -56,6 +76,38 @@ chrome.runtime.onMessage.addListener((message) => {
       const current = (result.highlights as Highlight[]) ?? [];
       chrome.storage.local.set({
         highlights: current.filter((highlight) => highlight.id !== id),
+      });
+    });
+  }
+});
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "NAVIGATE_TO_HIGHLIGHT") {
+    const { url, id } = message.payload;
+
+    chrome.tabs.query({}, (tabs) => {
+      const existingTab = tabs.find((tab) => tab.url && tab.url.includes(url));
+
+      if (existingTab?.id !== undefined) {
+        chrome.tabs.update(existingTab.id, { active: true });
+        chrome.windows.update(existingTab.windowId, { focused: true });
+        sendScrollMessage(existingTab.id, id);
+        return;
+      }
+
+      chrome.tabs.create({ url, active: true }, (newTab) => {
+        if (!newTab?.id) {
+          return;
+        }
+
+        const listener = (tabId: number, changeInfo: { status?: string }) => {
+          if (tabId === newTab.id && changeInfo.status === "complete") {
+            chrome.tabs.onUpdated.removeListener(listener);
+            sendScrollMessage(tabId, id);
+          }
+        };
+
+        chrome.tabs.onUpdated.addListener(listener);
       });
     });
   }

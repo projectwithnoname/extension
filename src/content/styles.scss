@@ -3,8 +3,7 @@
 @use "../shared/components/icon/styles" as icon;
 @use "../shared/components/tooltip/Styles" as tooltip;
 
-:host {
-  all: initial;
+#extension-root {
   display: block;
   pointer-events: none;
   font-family: var(--font-family-sans-serif);

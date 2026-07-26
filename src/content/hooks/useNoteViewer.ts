@@ -7,7 +7,7 @@ interface UseNoteViewerArgs {
 
 /**
  *
- * Owns the hover note popover: its state, the delayed-hide timer, and the
+ * @description Owns the hover note popover: its state, the delayed-hide timer, and the
  * setupNoteHover subscription which reads the latest notes via notesRef.
  */
 export default function useNoteViewer({ notesRef }: UseNoteViewerArgs) {
@@ -53,7 +53,12 @@ export default function useNoteViewer({ notesRef }: UseNoteViewerArgs) {
       }
 
       clearHideTimer();
-      setViewerState({ visible: true, x, y, highlightId, note });
+      setViewerState((current) => {
+        if (current.visible && current.highlightId === highlightId) {
+          return current;
+        }
+        return { visible: true, x, y, highlightId, note };
+      });
     };
 
     return setupNoteHover(showNoteViewer, scheduleHide);

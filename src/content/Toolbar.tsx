@@ -200,14 +200,14 @@ const Toolbar = ({
   };
 
   const handleColorChange = (nextColor: string) => {
-    setPaletteState({ ...paletteState, color: nextColor });
+    setPaletteState((prev) => ({ ...prev, color: nextColor }));
     if (!canHighlight) {
       onRestyle(nextColor, paletteState.style);
     }
   };
 
   const handleStyleChange = (nextStyle: HighlightStyle) => {
-    setPaletteState({ ...paletteState, style: nextStyle });
+    setPaletteState((prev) => ({ ...prev, style: nextStyle }));
     if (!canHighlight) {
       onRestyle(paletteState.color, nextStyle);
     }
@@ -259,7 +259,7 @@ const Toolbar = ({
                 ariaLabel="Change color"
                 ariaHasPopup
                 ariaExpanded={paletteState.show}
-                onClick={() => setPaletteState({ ...paletteState, show: !paletteState.show })}
+                onClick={() => setPaletteState((prev) => ({ ...prev, show: !prev.show }))}
               >
                 <Icon name="palette" size={16} />
               </Button>

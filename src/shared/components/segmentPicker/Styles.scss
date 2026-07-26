@@ -1,0 +1,34 @@
+.segmentPicker {
+  background-color: var(--color-neutral-200);
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  position: relative;
+  align-items: center;
+
+  .indicator {
+    position: absolute;
+    bottom: 2px;
+    left: 3px;
+    top: 2px;
+    width: calc((100% - 6px) / 2);
+    background-color: var(--color-neutral-0);
+    border-radius: 6px;
+    transition: transform 0.2s ease;
+  }
+
+  .segmentPickerItem {
+    flex: 1;
+    z-index: 1;
+    font: var(--body-xs-regular);
+    text-align: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    position: relative;
+    color: var(--color-neutral-700);
+
+    &.active {
+      color: var(--brand-purple);
+    }
+  }
+}

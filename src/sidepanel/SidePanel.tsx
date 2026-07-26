@@ -1,39 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import type { ComponentType } from "react";
+import Header from "./components/header/Header";
+import { HighlightsProvider } from "./context/HighlightsContext";
 import "./styles.scss";
-import { storageString } from "../shared/storage";
-import type { Highlight } from "../shared/types";
+import Shared from "./views/Shared";
+import Page from "./views/Page";
+import Tree from "./views/Tree";
+import { ThemeProvider } from "./context/ThemeContext";
+import type { ViewId } from "../shared/types";
+import { FilterProvider } from "./context/FilterContext";
+
+const views: Record<ViewId, ComponentType> = {
+  page: Page,
+  shared: Shared,
+  tree: Tree,
+};
 
 const SidePanel = () => {
-  const [testData, setTestData] = useState<Highlight[] | null>(null);
+  const [activeView, setActiveView] = useState<ViewId>("page");
 
-  useEffect(() => {
-    chrome.storage.local.get("highlights", (result: { highlights?: Highlight[] }) => {
-      const highlights = result.highlights ?? [];
-
-      console.log(highlights, "loaded highlights");
-
-      setTestData(highlights);
-    });
-  }, []);
+  const ActiveComponent = views[activeView];
 
   return (
     <div id="sidePanelContainer">
-      Brand name here
-      <button onClick={() => chrome.runtime.openOptionsPage()}>Open Settings</button>
-      <p>key: {storageString}</p>
-      {testData && (
-        <div>
-          {testData.map((item) => (
-            <div key={item.id}>
-              <span>{item.id}</span>
-              {" | "}
-              <span>{item.text}</span>
-              {" | "}
-              <span>{item.timestamp}</span>
-            </div>
-          ))}
-        </div>
-      )}
+      <ThemeProvider>
+        <HighlightsProvider>
+          <FilterProvider activeView={activeView}>
+            <Header activeView={activeView} onSelect={setActiveView} />
+            <ActiveComponent />
+          </FilterProvider>
+        </HighlightsProvider>
+      </ThemeProvider>
     </div>
   );
 };
