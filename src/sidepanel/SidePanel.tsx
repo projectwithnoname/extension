@@ -2,6 +2,10 @@ import { useState } from "react";
 import type { ComponentType } from "react";
 import Header from "./components/header/Header";
 import { HighlightsProvider } from "./context/HighlightsContext";
+import { useState } from "react";
+import type { ComponentType } from "react";
+import Header from "./components/header/Header";
+import { HighlightsProvider } from "./context/HighlightsContext";
 import "./styles.scss";
 import Shared from "./views/Shared";
 import Page from "./views/Page";
@@ -19,7 +23,9 @@ const views: Record<ViewId, ComponentType> = {
 
 const SidePanel = () => {
   const [activeView, setActiveView] = useState<ViewId>("page");
+  const [activeView, setActiveView] = useState<ViewId>("page");
 
+  const ActiveComponent = views[activeView];
   const ActiveComponent = views[activeView];
 
   return (
