@@ -11,7 +11,6 @@ export interface AuthUser {
   emailVerified: boolean;
 }
 
-
 export type AuthState =
   | { status: "unknown" }
   | { status: "signed-out" }

@@ -84,13 +84,18 @@ const resetToSignedOut = async (): Promise<void> => {
  * when the pairing code comes back. Stored in session storage rather than a
  * module variable so it survives the worker being torn down while the user is
  * still typing their password.
+ *
+ * `fresh` tells the connect page to send the user through a full login instead
+ * of pairing off whatever website session happens to still be in the browser.
+ * Signing out here cannot reach the website's cookie, so without it a sign-out
+ * followed by a sign-in would silently restore the same account.
  */
 export const startSignIn = async (): Promise<void> => {
   const state = crypto.randomUUID();
 
   await chrome.storage.session.set({ [PAIRING_STATE_KEY]: state });
   await chrome.tabs.create({
-    url: `${WEBSITE_ORIGIN}/extension/connect?state=${encodeURIComponent(state)}`,
+    url: `${WEBSITE_ORIGIN}/extension/connect?state=${encodeURIComponent(state)}&fresh=1`,
     active: true,
   });
 };
