@@ -11,8 +11,6 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.alarms.create(REVALIDATE_ALARM, { periodInMinutes: REVALIDATE_PERIOD_MINUTES });
 });
 
-// A sign-out on the website can happen while the browser is closed, so check
-// once on startup rather than waiting up to REVALIDATE_PERIOD_MINUTES.
 chrome.runtime.onStartup.addListener(() => {
   revalidate();
 });
@@ -23,8 +21,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
   }
 });
 
-// External senders land here, never in onMessage. Only origins listed under
-// `externally_connectable` in the manifest can reach it.
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
   if (!isAuthPairingMessage(message)) {
     return false;
@@ -41,7 +37,6 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     }
   });
 
-  // Keeps the message channel open for the async sendResponse above.
   return true;
 });
 

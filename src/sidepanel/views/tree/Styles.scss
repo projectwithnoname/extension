@@ -42,7 +42,6 @@
       outline-offset: -2px;
     }
 
-    // The chevron points right when closed and rotates down when open.
     > .icon:first-child {
       color: var(--color-neutral-600);
       transition: transform 0.15s ease;

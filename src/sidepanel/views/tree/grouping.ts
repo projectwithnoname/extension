@@ -38,11 +38,6 @@ const parse = (rawUrl: string): ParsedUrl => {
   }
 };
 
-/**
- * Buckets highlights into domain -> page -> highlights, which is the shape the
- * three accordion layers render. Domains and pages are sorted alphabetically;
- * highlights within a page are newest first.
- */
 export function groupHighlightsByDomain(highlights: Highlight[]): DomainGroup[] {
   const domains = new Map<string, DomainGroup>();
   const pages = new Map<string, PageGroup>();

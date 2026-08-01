@@ -1,4 +1,4 @@
-import {
+  import {
   ACCESS_TOKEN_EXPIRY_KEY,
   ACCESS_TOKEN_KEY,
   AUTH_STATE_KEY,
@@ -79,17 +79,6 @@ const resetToSignedOut = async (): Promise<void> => {
   await writeAuthState(SIGNED_OUT);
 };
 
-/**
- * Opens the website's connect page in a tab, tagged with a nonce we can check
- * when the pairing code comes back. Stored in session storage rather than a
- * module variable so it survives the worker being torn down while the user is
- * still typing their password.
- *
- * `fresh` tells the connect page to send the user through a full login instead
- * of pairing off whatever website session happens to still be in the browser.
- * Signing out here cannot reach the website's cookie, so without it a sign-out
- * followed by a sign-in would silently restore the same account.
- */
 export const startSignIn = async (): Promise<void> => {
   const state = crypto.randomUUID();
 
@@ -146,14 +135,6 @@ export const handlePairingCode = async (
   }
 };
 
-/**
- * Exchanges the stored refresh token for a fresh access token. Returns null and
- * signs the user out if the refresh token is gone or rejected.
- *
- * Concurrent callers can both refresh and rotate; the last write wins and both
- * tokens stay valid, since the server holds no state to invalidate the loser.
- * Revisit if token rotation ever becomes enforced server-side.
- */
 const refreshAccessToken = async (): Promise<string | null> => {
   const stored = await chrome.storage.local.get(REFRESH_TOKEN_KEY);
   const refreshToken = stored[REFRESH_TOKEN_KEY] as string | undefined;
@@ -240,11 +221,6 @@ export const revalidate = async (): Promise<void> => {
   }
 };
 
-/**
- * Clears local credentials and tells the website. The local clear is what
- * actually signs the user out — the revoke call is best-effort and currently
- * advisory, so its failure must not block anything.
- */
 export const signOut = async (): Promise<void> => {
   const stored = await chrome.storage.session.get(ACCESS_TOKEN_KEY);
   const token = stored[ACCESS_TOKEN_KEY] as string | undefined;
