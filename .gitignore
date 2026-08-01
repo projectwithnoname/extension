@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Extension signing key — determines the extension ID. Back this up somewhere
+# safe; losing it means the published extension can never be updated again.
+.keys
+claude/settings.local.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

@@ -1,7 +1,67 @@
+import { isAuthPairingMessage } from "../shared/auth";
+import type { AuthRequest } from "../shared/auth";
 import type { Highlight } from "../shared/types";
+import { handlePairingCode, readAuthState, revalidate, signOut, startSignIn } from "./auth";
+
+const REVALIDATE_ALARM = "auth-revalidate";
+const REVALIDATE_PERIOD_MINUTES = 45;
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
+  chrome.alarms.create(REVALIDATE_ALARM, { periodInMinutes: REVALIDATE_PERIOD_MINUTES });
+});
+
+// A sign-out on the website can happen while the browser is closed, so check
+// once on startup rather than waiting up to REVALIDATE_PERIOD_MINUTES.
+chrome.runtime.onStartup.addListener(() => {
+  revalidate();
+});
+
+chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === REVALIDATE_ALARM) {
+    revalidate();
+  }
+});
+
+// External senders land here, never in onMessage. Only origins listed under
+// `externally_connectable` in the manifest can reach it.
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  if (!isAuthPairingMessage(message)) {
+    return false;
+  }
+
+  handlePairingCode(message, sender).then((ok) => {
+    sendResponse({ ok });
+
+    // The extension opened this tab, so it closes it once pairing succeeds.
+    if (ok && sender.tab?.id !== undefined) {
+      chrome.tabs.remove(sender.tab.id).catch(() => {
+        // The user may have closed it already; nothing to do.
+      });
+    }
+  });
+
+  // Keeps the message channel open for the async sendResponse above.
+  return true;
+});
+
+chrome.runtime.onMessage.addListener((message: AuthRequest, _sender, sendResponse) => {
+  if (message.type === "AUTH_SIGN_IN") {
+    startSignIn().then(() => sendResponse({ ok: true }));
+    return true;
+  }
+
+  if (message.type === "AUTH_SIGN_OUT") {
+    signOut().then(() => sendResponse({ ok: true }));
+    return true;
+  }
+
+  if (message.type === "AUTH_REVALIDATE") {
+    revalidate().then(async () => sendResponse({ state: await readAuthState() }));
+    return true;
+  }
+
+  return false;
 });
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));
