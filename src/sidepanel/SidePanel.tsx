@@ -9,6 +9,7 @@ import Tree from "./views/Tree";
 import { ThemeProvider } from "./context/ThemeContext";
 import type { ViewId } from "../shared/types";
 import { FilterProvider } from "./context/FilterContext";
+import { AuthProvider } from "./context/AuthContext";
 
 const views: Record<ViewId, ComponentType> = {
   page: Page,
@@ -24,12 +25,14 @@ const SidePanel = () => {
   return (
     <div id="sidePanelContainer">
       <ThemeProvider>
-        <HighlightsProvider>
-          <FilterProvider activeView={activeView}>
-            <Header activeView={activeView} onSelect={setActiveView} />
-            <ActiveComponent />
-          </FilterProvider>
-        </HighlightsProvider>
+        <AuthProvider>
+          <HighlightsProvider>
+            <FilterProvider activeView={activeView}>
+              <Header activeView={activeView} onSelect={setActiveView} />
+              <ActiveComponent />
+            </FilterProvider>
+          </HighlightsProvider>
+        </AuthProvider>
       </ThemeProvider>
     </div>
   );

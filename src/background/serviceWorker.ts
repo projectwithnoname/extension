@@ -1,7 +1,34 @@
+import { isAuthTokenMessage } from "../shared/auth";
+import type { AuthRequest } from "../shared/auth";
 import type { Highlight } from "../shared/types";
+import { handleToken, signOut, startSignIn } from "./auth";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
+});
+
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  if (!isAuthTokenMessage(message)) {
+    return false;
+  }
+
+  handleToken(message, sender).then((ok) => sendResponse({ ok }));
+
+  return true;
+});
+
+chrome.runtime.onMessage.addListener((message: AuthRequest, _sender, sendResponse) => {
+  if (message.type === "AUTH_SIGN_IN") {
+    startSignIn().then(() => sendResponse({ ok: true }));
+    return true;
+  }
+
+  if (message.type === "AUTH_SIGN_OUT") {
+    signOut().then(() => sendResponse({ ok: true }));
+    return true;
+  }
+
+  return false;
 });
 
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch((error) => console.error(error));

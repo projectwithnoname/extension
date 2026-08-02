@@ -1,7 +1,39 @@
-import React from "react";
+import Button from "../../shared/components/button/Button";
+import { useAuth } from "../hooks/useAuth";
+import "./Shared.scss";
 
 const Shared = () => {
-  return <div>Shared</div>;
+  const { state, signIn, signOut } = useAuth();
+
+  if (state.status === "unknown") {
+    return <div className="sharedView" aria-busy="true" />;
+  }
+
+  if (state.status === "signed-out") {
+    return (
+      <div className="sharedView prompt">
+        <p>Sign in to sync your highlights and see what's shared with you.</p>
+        <Button onClick={signIn}>Sign in</Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="sharedView">
+      <header className="account">
+        {state.user.picture && <img className="avatar" src={state.user.picture} alt="" />}
+        <div className="identity">
+          <span className="name">{state.user.name}</span>
+          <span className="email">{state.user.email}</span>
+        </div>
+        <Button type="outline" palette="secondary" size="sm" onClick={signOut}>
+          Sign out
+        </Button>
+      </header>
+
+      <p>Shared highlights will appear here.</p>
+    </div>
+  );
 };
 
 export default Shared;
