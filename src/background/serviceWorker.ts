@@ -1,41 +1,18 @@
-import { isAuthPairingMessage } from "../shared/auth";
+import { isAuthTokenMessage } from "../shared/auth";
 import type { AuthRequest } from "../shared/auth";
 import type { Highlight } from "../shared/types";
-import { handlePairingCode, readAuthState, revalidate, signOut, startSignIn } from "./auth";
-
-const REVALIDATE_ALARM = "auth-revalidate";
-const REVALIDATE_PERIOD_MINUTES = 45;
+import { handleToken, signOut, startSignIn } from "./auth";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
-  chrome.alarms.create(REVALIDATE_ALARM, { periodInMinutes: REVALIDATE_PERIOD_MINUTES });
-});
-
-chrome.runtime.onStartup.addListener(() => {
-  revalidate();
-});
-
-chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === REVALIDATE_ALARM) {
-    revalidate();
-  }
 });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-  if (!isAuthPairingMessage(message)) {
+  if (!isAuthTokenMessage(message)) {
     return false;
   }
 
-  handlePairingCode(message, sender).then((ok) => {
-    sendResponse({ ok });
-
-    // The extension opened this tab, so it closes it once pairing succeeds.
-    if (ok && sender.tab?.id !== undefined) {
-      chrome.tabs.remove(sender.tab.id).catch(() => {
-        // The user may have closed it already; nothing to do.
-      });
-    }
-  });
+  handleToken(message, sender).then((ok) => sendResponse({ ok }));
 
   return true;
 });
@@ -48,11 +25,6 @@ chrome.runtime.onMessage.addListener((message: AuthRequest, _sender, sendRespons
 
   if (message.type === "AUTH_SIGN_OUT") {
     signOut().then(() => sendResponse({ ok: true }));
-    return true;
-  }
-
-  if (message.type === "AUTH_REVALIDATE") {
-    revalidate().then(async () => sendResponse({ state: await readAuthState() }));
     return true;
   }
 

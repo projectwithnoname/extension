@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     };
 
+    // The storage listener is also how signing in reaches the panel: the tab
+    // that hands over the token writes AUTH_STATE_KEY, and this picks it up.
     chrome.storage.onChanged.addListener(handleChange);
-
-    send({ type: "AUTH_REVALIDATE" });
 
     return () => chrome.storage.onChanged.removeListener(handleChange);
   }, []);

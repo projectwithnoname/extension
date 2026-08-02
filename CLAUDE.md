@@ -41,6 +41,33 @@ The content config sets `emptyOutDir: false` to avoid wiping the main build outp
 
 Everything revolves around `chrome.storage.local["highlights"]` — an array of [`Highlight`](src/shared/types.ts) objects. The **background service worker is the only writer**; content, side panel, and options are readers that send messages to mutate. Because `chrome.storage.onChanged` broadcasts to every extension context, two-way sync is free: each context (a) writes only through the background and (b) re-reads on the change event. No direct panel↔content messaging is needed.
 
+### Authentication (`src/shared/auth.ts`, `src/background/auth.ts`)
+
+**The extension contains no login UI and no login logic.** Signing in means opening a tab on the website, which owns the entire Auth0 flow:
+
+```
+Shared view "Sign in" button
+  → useAuth().signIn() → chrome.runtime.sendMessage({ type: "AUTH_SIGN_IN" })
+    → background/auth.ts startSignIn(): chrome.tabs.create(`${WEBSITE_ORIGIN}/sign-in`)
+      → …website does Auth0 login + email verification…
+        → website calls chrome.runtime.sendMessage(EXTENSION_ID, { type: "AUTH_TOKEN", … })
+          → onMessageExternal → handleToken() writes authState + authAccessToken
+            → chrome.storage.onChanged → AuthProvider re-renders the panel
+```
+
+Auth reuses the storage-broadcast pattern above: the website's tab writes storage, and every context picks it up on `onChanged`. That is the *only* path from sign-in to the panel — there is no messaging between the tab and the panel.
+
+- **`src/shared/auth.ts`** — the contract shared with the website: `WEBSITE_ORIGIN`, `AUTH0_ORIGIN`, `LOGOUT_URL`, `AuthUser`, `AuthState` (`unknown | signed-out | signed-in`), the storage keys `AUTH_STATE_KEY` / `ACCESS_TOKEN_KEY`, `AuthRequest`, `AuthTokenMessage`, and the `isAuthTokenMessage()` type guard. `WEBSITE_ORIGIN` must stay in sync with `externally_connectable.matches` in `public/manifest.json`, and `AUTH0_ORIGIN` with the website's `AUTH0_DOMAIN`.
+- **`src/background/auth.ts`** — the only writer of auth storage: `readAuthState`, `getAccessToken`, `startSignIn`, `handleToken`, `signOut`.
+- **`handleToken` checks `sender.origin` against `WEBSITE_ORIGIN`** and returns `false` otherwise. This is the trust boundary — any page can attempt an external message. Keep the check first, before touching storage.
+- **`status: "unknown"`** is the pre-read state, not an error. Render a placeholder for it; treating it as signed-out flashes the sign-in prompt on every panel open.
+
+The `key` field in `public/manifest.json` pins the extension ID across reinstalls, which is what keeps the website's `EXTENSION_ID` valid. **Do not regenerate or remove it** — a new ID silently breaks the handoff.
+
+`signOut()` is a full sign-out, in three steps: it clears local storage (so the panel flips immediately), then opens the website's `/auth/logout` in a background tab and closes it once the redirect chain lands back on `WEBSITE_ORIGIN`, then removes any cookie left on `WEBSITE_ORIGIN` or `AUTH0_ORIGIN`. All three matter — clearing storage alone leaves the website session cookie and Auth0's SSO cookie alive, and either one signs the user back in with no prompt. The cookie sweep is the fallback for when the website is unreachable and the round-trip does nothing; it needs the `cookies` permission in `public/manifest.json`.
+
+The stored token is a 30-day HMAC minted by the website. Nothing refreshes or validates it yet, and no request currently sends it — `getAccessToken()` exists for the sync backend that doesn't exist.
+
 ### Messaging layer (`src/shared/messaging.ts`)
 
 Central, typed message contract shared by all contexts. Defines `ExtensionMessage`, the payload types, `buildCreatePayload()`, and the senders `sendCreate`, `sendUpdateHighlight`, `sendUpdateNote`, `sendDelete`. Background message types (`src/background/serviceWorker.ts`): `ACTION_CLICKED` (create), `UPDATE_HIGHLIGHT` (recolor/restyle), `UPDATE_NOTE` (note text), `DELETE_HIGHLIGHT`. The service worker also calls `chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })`.
@@ -76,11 +103,13 @@ Mounts React into a **closed Shadow DOM** to prevent style leakage from host pag
 
 ### Side panel (`src/sidepanel/`)
 
-The primary UI (replaces the old popup), opened from the toolbar action and declared in `manifest.json` as `side_panel.default_path`. Three tabs are planned — **Content** (per-page/domain/all highlight list), **Tree** (highlights grouped per domain), **Collaborate** (stub, needs accounts/sync backend). Currently `Content`/`Tree`/`Collaborate` are placeholders and `SidePanel.tsx` also renders a temporary flat `HighlightList` scaffold.
+The primary UI (replaces the old popup), opened from the toolbar action and declared in `manifest.json` as `side_panel.default_path`. Three tabs, keyed by `ViewId` (`src/shared/types.ts`): **Page** (highlights for the active tab), **Tree** (grouped per domain), **Shared** (account + sync, the only auth surface in the extension).
 
 - **`main.tsx`** — Mounts `<SidePanel />` into `#root`.
-- **`SidePanel.tsx`** — View shell: `contentViews` tab registry, `activeView` state, renders `Header` + the active view inside `<HighlightsProvider>`.
-- **`context/HighlightsContext.tsx`** + **`context/useHighlights.ts`** — The store. Mirrors `chrome.storage.local["highlights"]`, subscribes to `onChanged`, and exposes `highlights`, `loading`, `updateHighlight`, `updateNote`, `deleteHighlight`. Mutators only send messages (via `messaging.ts`); `onChanged` is what updates local state, so there is one write path and no drift. Read-only consumers use the `useHighlights()` hook.
+- **`SidePanel.tsx`** — View shell: the `views` registry (`page` / `shared` / `tree`), `activeView` state, and the provider stack `ThemeProvider > AuthProvider > HighlightsProvider > FilterProvider` wrapping `Header` + the active view.
+- **`context/HighlightsContext.tsx`** + **`hooks/useHighlights.ts`** — The store. Mirrors `chrome.storage.local["highlights"]`, subscribes to `onChanged`, and exposes `highlights`, `loading`, `updateHighlight`, `updateNote`, `deleteHighlight`. Mutators only send messages (via `messaging.ts`); `onChanged` is what updates local state, so there is one write path and no drift. Read-only consumers use the `useHighlights()` hook.
+- **`context/AuthContext.tsx`** + **`hooks/useAuth.ts`** — Same shape for auth: mirrors `chrome.storage.local["authState"]`, subscribes to `onChanged`, exposes `state`, `signIn`, `signOut`. Both mutators only post `AuthRequest` messages to the background — the panel never writes auth storage and never touches Auth0.
+- **`views/Shared.tsx`** — Renders on `state.status`: a blank `aria-busy` placeholder for `unknown`, the sign-in prompt for `signed-out`, and the account header (avatar, name, email, sign-out) for `signed-in`. Shared-highlight content is still a stub.
 - **`components/header/Header.tsx`** — Tab bar.
 - **`ARCHITECTURE.md`** — Design blueprint/intent for the full side panel (scoping, tree grouping, theming, sync) ahead of the current implementation. **`SYNC_IMPLEMENTATION_PLAN.md`** — sync plan notes.
 
@@ -94,6 +123,7 @@ The primary UI (replaces the old popup), opened from the toolbar action and decl
 
 - **`types.ts`** — `HighlightStyle` and the `Highlight` interface `{ id, text, timestamp, url, context, color, style?, note? }`.
 - **`messaging.ts`** — typed message contract + senders (see above).
+- **`auth.ts`** — auth contract shared with the *website*, not just with other contexts (see above). Changing it means changing the website too.
 - **`utils.ts`** — `normalizeUrl()` (scopes highlights to a page; can throw on non-URL strings — guard when grouping/filtering).
 - **`storage.ts`** — exports `storageString` key. **`constants.ts`** — currently empty.
 - **`components/`** — reusable UI: `Button`, `Icon` (inlines `public/icons/*.svg` via `import.meta.glob(... ?raw)` since the IIFE content script can't fetch files at runtime), `Tooltip`.
