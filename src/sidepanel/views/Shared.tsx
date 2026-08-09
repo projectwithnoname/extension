@@ -1,9 +1,20 @@
+import { useState } from "react";
 import Button from "../../shared/components/button/Button";
+import { getMyData } from "../../shared/services/user";
 import { useAuth } from "../hooks/useAuth";
 import "./Shared.scss";
 
 const Shared = () => {
   const { state, signIn, signOut } = useAuth();
+
+  const [data, setData] = useState(null);
+
+  const getData =  async() => {
+    const data = await getMyData();
+    setData(data)
+    console.log(data);
+    
+  }
 
   if (state.status === "unknown") {
     return <div className="sharedView" aria-busy="true" />;
@@ -30,6 +41,8 @@ const Shared = () => {
           Sign out
         </Button>
       </header>
+
+      <button onClick={getData}>get my data</button>
 
       <p>Shared highlights will appear here.</p>
     </div>
