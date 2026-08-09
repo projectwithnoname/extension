@@ -17,6 +17,7 @@ import { buildCreatePayload, sendCreate, sendUpdateHighlight, sendUpdateNote, se
 import useHighlightNotes from "./hooks/useHighlightNotes";
 import useNoteViewer from "./hooks/useNoteViewer";
 import useToolbar from "./hooks/useToolbar";
+import useToolbarEnabled from "../shared/hooks/useToolbarEnabled";
 
 const host = document.createElement("div");
 host.id = "my-extension-root";
@@ -35,8 +36,9 @@ shadowRoot.appendChild(mountPoint);
 
 const HighlighterRoot = () => {
   const notes = useHighlightNotes();
+  const { enabled: toolbarEnabled } = useToolbarEnabled();
   const viewer = useNoteViewer({ notesRef: notes.notesRef });
-  const toolbar = useToolbar({ onBeforeShow: viewer.hideImmediately });
+  const toolbar = useToolbar({ onBeforeShow: viewer.hideImmediately, enabled: toolbarEnabled });
 
   const onHighlight = (color: string, style: HighlightStyle) => {
     const result = higlightSelectedText(color, style);
