@@ -6,11 +6,14 @@ import type { Highlight } from "../../shared/types";
 import { useTheme } from "../context/ThemeContext";
 import { useFilters } from "../context/FilterContext";
 import HighlightItem from "../components/highlightItem/HighlightItem";
+import Toggle from "../../shared/components/toggle/Toggle";
+import useToolbarEnabled from "../../shared/hooks/useToolbarEnabled";
 
 const Page = () => {
   const currentPage = useActivePage();
   const { highlights } = useHighlights();
   const { state } = useFilters();
+  const { enabled: toolbarEnabled, setEnabled: setToolbarEnabled } = useToolbarEnabled();
   //temp, not needed
   const { theme, toggleTheme } = useTheme();
 
@@ -37,6 +40,12 @@ const Page = () => {
       </div>
 
       <footer className="footer">
+        <Toggle
+          checked={toolbarEnabled}
+          onChange={setToolbarEnabled}
+          label={toolbarEnabled ? "Toolbar enabled" : "Toolbar disabled"}
+        />
+
         <button onClick={toggleTheme}>{theme}</button>
       </footer>
     </div>

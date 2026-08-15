@@ -1,0 +1,68 @@
+.toggle {
+  --toggle-height: 20px;
+  --toggle-width: 34px;
+  --toggle-gap: 2px;
+
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  padding: var(--toggle-gap);
+  border: none;
+  border-radius: 999px;
+  background-color: var(--color-neutral-400);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &.sm {
+    --toggle-height: 16px;
+    --toggle-width: 28px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--brand-purple-secondary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .thumb {
+    width: calc(var(--toggle-height) - var(--toggle-gap) * 2);
+    height: calc(var(--toggle-height) - var(--toggle-gap) * 2);
+    border-radius: 50%;
+    background-color: var(--color-neutral-0);
+    transition: transform 0.2s ease;
+  }
+
+  &.checked {
+    background-color: var(--brand-purple);
+
+    .thumb {
+      transform: translateX(calc(var(--toggle-width) - var(--toggle-height)));
+    }
+  }
+}
+
+.toggleField {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+
+  .label {
+    font: var(--body-sm-regular);
+    color: var(--color-neutral-800);
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    .label {
+      color: var(--color-neutral-600);
+    }
+  }
+}
