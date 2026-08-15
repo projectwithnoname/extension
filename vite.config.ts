@@ -8,6 +8,7 @@ export default defineConfig({
     outDir: "dist",
     emptyOutDir: true,
     sourcemap: true,
+    modulePreload: false,
     rollupOptions: {
       input: {
         sidepanel: resolve(__dirname, "sidepanel.html"),

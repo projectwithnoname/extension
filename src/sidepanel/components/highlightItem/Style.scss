@@ -1,5 +1,5 @@
 .highlightItem {
-  padding: 0.5rem;
+  padding: 8px;
   border: 1px solid var(--alpha-night-10);
   border-radius: 8px;
   color: var(--black);
@@ -19,12 +19,12 @@
   .header {
     display: flex;
     align-items: self-start;
-    margin-bottom: 0.25rem;
+    margin-bottom: 4px;
 
     .favicon {
       width: 16px;
       height: 16px;
-      margin-right: 0.5rem;
+      margin-right: 8px;
     }
 
     h3 {
@@ -39,25 +39,25 @@
   }
 
   .noteWrapper {
-    margin: 0.5rem;
-    padding: 0.5rem;
+    margin: 8px;
+    padding: 8px;
     border-radius: 8px;
     background-color: var(--alpha-night-10);
     display: flex;
     align-items: self-start;
-    gap: 0.25rem;
+    gap: 4px;
   }
 
   .actionsContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 0.25rem;
+    margin-top: 4px;
 
     .infoContainer {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 4px;
 
       .colorBadge {
         height: 12px;
@@ -74,7 +74,7 @@
     .actions {
       display: flex;
       align-items: center;
-      gap: 0.25rem;
+      gap: 4px;
       opacity: 0;
     }
   }

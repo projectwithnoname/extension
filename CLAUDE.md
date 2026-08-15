@@ -133,6 +133,24 @@ The primary UI (replaces the old popup), opened from the toolbar action and decl
 
 Each context has its own `styles.scss`; component styles live next to components as `Styles.scss`. Shadow DOM isolation means content-script styles are self-contained (tokens are declared on `:host` as well as `:root` so they cross the shadow boundary); side panel and options styles are scoped to their own HTML pages.
 
+**Sizes are in `px`. Never write `rem` in a component stylesheet.**
+
+```scss
+.thing {
+  padding: 8px;   // not 0.5rem
+  gap: 4px;
+}
+```
+
+Shadow DOM isolates selectors and inherited properties, but it does **not** rebase `rem` — a shadow root is not a new root element, so `rem` always resolves against the *host page's* `<html>` font-size. A site using the common `html { font-size: 62.5% }` would render the content-script toolbar at 62.5% scale. `px` is absolute and has no such relationship, so it is immune by construction.
+
+The one exception is the **type scale** in `_tokens.scss`, which stays proportional so the side panel still honours the user's browser font-size preference. It goes through the `rem()` helper in `src/shared/styles/_units.scss`, which expands `rem(0.875)` to `calc(0.875 * var(--root-font-size))`. `--root-font-size` is `1rem` on the panel/options pages and pinned to `16px` on `:host` in the content script.
+
+Two gotchas if you ever touch the scale:
+
+- Inside a **custom-property** value Sass does not evaluate functions, so interpolate: `--token: #{rem(0.875)}`.
+- A custom property containing `var()` is resolved **where it is declared** and inherits already-resolved. That is why the content script pins `--root-font-size` on `:host` (the same element `_tokens.scss` declares the scale on) rather than on `#extension-root` — pinning on a descendant leaves every `font:` token page-relative.
+
 ### Tests
 
 - **Unit** — `tests/unit/**/*.test.ts` via vitest (`vitest.config.ts`, node environment).

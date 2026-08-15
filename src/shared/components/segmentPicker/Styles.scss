@@ -26,6 +26,12 @@
     cursor: pointer;
     position: relative;
     color: var(--color-neutral-700);
+    background: transparent;
+
+    &:focus-visible {
+      outline-offset: -2px;
+      border-radius: 6px;
+    }
 
     &.active {
       color: var(--brand-purple);

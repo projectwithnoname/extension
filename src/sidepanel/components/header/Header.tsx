@@ -47,19 +47,25 @@ const Header = ({ activeView, onSelect }: HeaderProps) => {
 
   return (
     <header id="sidePanelHeader">
-      <section className="tabs">
+      <section className="tabs" role="group" aria-label="Views">
         {tabs.map((tab) => (
-          <div key={tab.id} className={tab.id === activeView ? "active tab" : "tab"} onClick={() => onSelect(tab.id)}>
+          <button
+            key={tab.id}
+            type="button"
+            className={tab.id === activeView ? "active tab" : "tab"}
+            aria-pressed={tab.id === activeView}
+            onClick={() => onSelect(tab.id)}
+          >
             {tab.label}
-          </div>
+          </button>
         ))}
       </section>
 
       <section className="sort">
         {activeView === "page" && (
-          <SegmentPicker>
-            <SegmentPickerItem label="This page" onMouseUp={() => setScope("page")} />
-            <SegmentPickerItem label="This domain" onMouseUp={() => setScope("domain")} />
+          <SegmentPicker label="Highlight scope">
+            <SegmentPickerItem label="This page" onClick={() => setScope("page")} />
+            <SegmentPickerItem label="This domain" onClick={() => setScope("domain")} />
           </SegmentPicker>
         )}
 
@@ -89,7 +95,8 @@ const Header = ({ activeView, onSelect }: HeaderProps) => {
             )}
           </div>
 
-          <div></div>
+          {/* ADD A DROPDOWN FOR FILLTERING HERE */}
+          {/* <div></div> */}
         </div>
       </section>
     </header>
