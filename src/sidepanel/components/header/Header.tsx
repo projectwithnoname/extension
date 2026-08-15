@@ -89,7 +89,8 @@ const Header = ({ activeView, onSelect }: HeaderProps) => {
             )}
           </div>
 
-          <div></div>
+          {/* ADD A DROPDOWN FOR FILLTERING HERE */}
+          {/* <div></div> */}
         </div>
       </section>
     </header>

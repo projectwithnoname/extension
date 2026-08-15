@@ -3,6 +3,7 @@ import { useHighlights } from "../hooks/useHighlights";
 import { useFilters } from "../context/FilterContext";
 import { searchHighlights } from "../../shared/utils";
 import DomainNode from "./tree/DomainNode";
+import EmptyState from "../../shared/components/emptyState/EmptyState";
 import { groupHighlightsByDomain } from "./tree/grouping";
 import "./tree/Styles.scss";
 
@@ -44,7 +45,7 @@ const Tree = () => {
           ))}
         </ul>
       ) : (
-        <p className="emptyState">{isSearching ? "No highlights match your search." : "No highlights saved yet."}</p>
+        <EmptyState message={isSearching ? "No highlights match your search." : "No highlights saved yet."} />
       )}
     </div>
   );

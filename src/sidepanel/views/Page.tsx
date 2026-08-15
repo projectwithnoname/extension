@@ -7,14 +7,29 @@ import { useTheme } from "../context/ThemeContext";
 import { useFilters } from "../context/FilterContext";
 import HighlightItem from "../components/highlightItem/HighlightItem";
 import Toggle from "../../shared/components/toggle/Toggle";
+import Button from "../../shared/components/button/Button";
+import Tooltip from "../../shared/components/tooltip/Tooltip";
+import Icon from "../../shared/components/icon/Icon";
+import EmptyState from "../../shared/components/emptyState/EmptyState";
 import useToolbarEnabled from "../../shared/hooks/useToolbarEnabled";
+
+const themeIcons = {
+  system: "monitor",
+  light: "sun",
+  dark: "moon",
+} as const;
+
+const themeLabels = {
+  system: "System theme",
+  light: "Light theme",
+  dark: "Dark theme",
+} as const;
 
 const Page = () => {
   const currentPage = useActivePage();
   const { highlights } = useHighlights();
   const { state } = useFilters();
   const { enabled: toolbarEnabled, setEnabled: setToolbarEnabled } = useToolbarEnabled();
-  //temp, not needed
   const { theme, toggleTheme } = useTheme();
 
   const relevantHighlights = useMemo(() => {
@@ -35,7 +50,7 @@ const Page = () => {
         {relevantHighlights.length > 0 ? (
           relevantHighlights.map((highlight: Highlight, index) => <HighlightItem key={index} {...highlight} />)
         ) : (
-          <p>No highlights found.</p>
+          <EmptyState message="No highlights on this page yet." />
         )}
       </div>
 
@@ -46,7 +61,11 @@ const Page = () => {
           label={toolbarEnabled ? "Toolbar enabled" : "Toolbar disabled"}
         />
 
-        <button onClick={toggleTheme}>{theme}</button>
+        <Tooltip text={themeLabels[theme]} position="left">
+          <Button iconOnly type="tonal" size="sm" onClick={toggleTheme} ariaLabel={themeLabels[theme]}>
+            <Icon name={themeIcons[theme]} size={16} />
+          </Button>
+        </Tooltip>
       </footer>
     </div>
   );

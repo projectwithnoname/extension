@@ -1,7 +1,11 @@
+@use "units" as *;
+
 //#151b23 github dark bg
 
 :root,
 :host {
+  --root-font-size: 1rem;
+
   --brand-purple: #5943b6;
   --brand-purple-secondary: #a989f5;
   --brand-orange-primary: #e24329;
@@ -60,67 +64,71 @@
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  --d1-regular: var(--font-weight-normal) 4.5rem / 5rem var(--font-family-sans-serif);
-  --d1-semibold: var(--font-weight-semibold) 4.5rem / 5rem var(--font-family-sans-serif);
-  --d1-bold: var(--font-weight-bold) 4.5rem / 5rem var(--font-family-sans-serif);
-  --d2-regular: var(--font-weight-normal) 3.75rem / 4.25rem var(--font-family-sans-serif);
-  --d2-semibold: var(--font-weight-semibold) 3.75rem / 4.25rem var(--font-family-sans-serif);
-  --d2-bold: var(--font-weight-bold) 3.75rem / 4.25rem var(--font-family-sans-serif);
-  --d3-regular: var(--font-weight-normal) 3rem / 3.5rem var(--font-family-sans-serif);
-  --d3-semibold: var(--font-weight-semibold) 3rem / 3.5rem var(--font-family-sans-serif);
-  --d3-bold: var(--font-weight-bold) 3rem / 3.5rem var(--font-family-sans-serif);
+  --d1-regular: var(--font-weight-normal) #{rem(4.5)} / #{rem(5)} var(--font-family-sans-serif);
+  --d1-semibold: var(--font-weight-semibold) #{rem(4.5)} / #{rem(5)} var(--font-family-sans-serif);
+  --d1-bold: var(--font-weight-bold) #{rem(4.5)} / #{rem(5)} var(--font-family-sans-serif);
+  --d2-regular: var(--font-weight-normal) #{rem(3.75)} / #{rem(4.25)} var(--font-family-sans-serif);
+  --d2-semibold: var(--font-weight-semibold) #{rem(3.75)} / #{rem(4.25)} var(--font-family-sans-serif);
+  --d2-bold: var(--font-weight-bold) #{rem(3.75)} / #{rem(4.25)} var(--font-family-sans-serif);
+  --d3-regular: var(--font-weight-normal) #{rem(3)} / #{rem(3.5)} var(--font-family-sans-serif);
+  --d3-semibold: var(--font-weight-semibold) #{rem(3)} / #{rem(3.5)} var(--font-family-sans-serif);
+  --d3-bold: var(--font-weight-bold) #{rem(3)} / #{rem(3.5)} var(--font-family-sans-serif);
 
-  --h1-regular: var(--font-weight-normal) 2.25rem / 2.75rem var(--font-family-sans-serif);
-  --h1-semibold: var(--font-weight-semibold) 2.25rem / 2.75rem var(--font-family-sans-serif);
-  --h1-bold: var(--font-weight-bold) 2.25rem / 2.75rem var(--font-family-sans-serif);
-  --h2-regular: var(--font-weight-normal) 2rem / 2.5rem var(--font-family-sans-serif);
-  --h2-semibold: var(--font-weight-semibold) 2rem / 2.5rem var(--font-family-sans-serif);
-  --h2-bold: var(--font-weight-bold) 2rem / 2.5rem var(--font-family-sans-serif);
-  --h3-regular: var(--font-weight-normal) 1.5rem / 2rem var(--font-family-sans-serif);
-  --h3-semibold: var(--font-weight-semibold) 1.5rem / 2rem var(--font-family-sans-serif);
-  --h3-bold: var(--font-weight-bold) 1.5rem / 2rem var(--font-family-sans-serif);
+  --h1-regular: var(--font-weight-normal) #{rem(2.25)} / #{rem(2.75)} var(--font-family-sans-serif);
+  --h1-semibold: var(--font-weight-semibold) #{rem(2.25)} / #{rem(2.75)} var(--font-family-sans-serif);
+  --h1-bold: var(--font-weight-bold) #{rem(2.25)} / #{rem(2.75)} var(--font-family-sans-serif);
+  --h2-regular: var(--font-weight-normal) #{rem(2)} / #{rem(2.5)} var(--font-family-sans-serif);
+  --h2-semibold: var(--font-weight-semibold) #{rem(2)} / #{rem(2.5)} var(--font-family-sans-serif);
+  --h2-bold: var(--font-weight-bold) #{rem(2)} / #{rem(2.5)} var(--font-family-sans-serif);
+  --h3-regular: var(--font-weight-normal) #{rem(1.5)} / #{rem(2)} var(--font-family-sans-serif);
+  --h3-semibold: var(--font-weight-semibold) #{rem(1.5)} / #{rem(2)} var(--font-family-sans-serif);
+  --h3-bold: var(--font-weight-bold) #{rem(1.5)} / #{rem(2)} var(--font-family-sans-serif);
 
-  --body-xl-regular: var(--font-weight-normal) 1.25rem / 1.75rem var(--font-family-sans-serif);
-  --body-xl-italic: italic var(--font-weight-normal) 1.25rem / 1.75rem var(--font-family-sans-serif);
-  --body-xl-semibold: var(--font-weight-semibold) 1.25rem / 1.75rem var(--font-family-sans-serif);
-  --body-xl-semibold-italic: italic var(--font-weight-semibold) 1.25rem / 1.75rem var(--font-family-sans-serif);
-  --body-xl-bold: var(--font-weight-bold) 1.25rem / 1.75rem var(--font-family-sans-serif);
-  --body-xl-bold-italic: italic var(--font-weight-bold) 1.25rem / 1.75rem var(--font-family-sans-serif);
+  --body-xl-regular: var(--font-weight-normal) #{rem(1.25)} / #{rem(1.75)} var(--font-family-sans-serif);
+  --body-xl-italic: italic var(--font-weight-normal) #{rem(1.25)} / #{rem(1.75)} var(--font-family-sans-serif);
+  --body-xl-semibold: var(--font-weight-semibold) #{rem(1.25)} / #{rem(1.75)} var(--font-family-sans-serif);
+  --body-xl-semibold-italic: italic var(--font-weight-semibold) #{rem(1.25)} / #{rem(1.75)}
+    var(--font-family-sans-serif);
+  --body-xl-bold: var(--font-weight-bold) #{rem(1.25)} / #{rem(1.75)} var(--font-family-sans-serif);
+  --body-xl-bold-italic: italic var(--font-weight-bold) #{rem(1.25)} / #{rem(1.75)} var(--font-family-sans-serif);
 
-  --body-lg-regular: var(--font-weight-normal) 1.125rem / 1.5rem var(--font-family-sans-serif);
-  --body-lg-italic: italic var(--font-weight-normal) 1.125rem / 1.5rem var(--font-family-sans-serif);
-  --body-lg-semibold: var(--font-weight-semibold) 1.125rem / 1.5rem var(--font-family-sans-serif);
-  --body-lg-semibold-italic: italic var(--font-weight-semibold) 1.125rem / 1.5rem var(--font-family-sans-serif);
-  --body-lg-bold: var(--font-weight-bold) 1.125rem / 1.5rem var(--font-family-sans-serif);
-  --body-lg-bold-italic: italic var(--font-weight-bold) 1.125rem / 1.5rem var(--font-family-sans-serif);
+  --body-lg-regular: var(--font-weight-normal) #{rem(1.125)} / #{rem(1.5)} var(--font-family-sans-serif);
+  --body-lg-italic: italic var(--font-weight-normal) #{rem(1.125)} / #{rem(1.5)} var(--font-family-sans-serif);
+  --body-lg-semibold: var(--font-weight-semibold) #{rem(1.125)} / #{rem(1.5)} var(--font-family-sans-serif);
+  --body-lg-semibold-italic: italic var(--font-weight-semibold) #{rem(1.125)} / #{rem(1.5)}
+    var(--font-family-sans-serif);
+  --body-lg-bold: var(--font-weight-bold) #{rem(1.125)} / #{rem(1.5)} var(--font-family-sans-serif);
+  --body-lg-bold-italic: italic var(--font-weight-bold) #{rem(1.125)} / #{rem(1.5)} var(--font-family-sans-serif);
 
-  --body-md-regular: var(--font-weight-normal) 1rem / 1.25rem var(--font-family-sans-serif);
-  --body-md-italic: italic var(--font-weight-normal) 1rem / 1.25rem var(--font-family-sans-serif);
-  --body-md-semibold: var(--font-weight-semibold) 1rem / 1.25rem var(--font-family-sans-serif);
-  --body-md-semibold-italic: italic var(--font-weight-semibold) 1rem / 1.25rem var(--font-family-sans-serif);
-  --body-md-bold: var(--font-weight-bold) 1rem / 1.25rem var(--font-family-sans-serif);
-  --body-md-bold-italic: italic var(--font-weight-bold) 1rem / 1.25rem var(--font-family-sans-serif);
+  --body-md-regular: var(--font-weight-normal) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
+  --body-md-italic: italic var(--font-weight-normal) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
+  --body-md-semibold: var(--font-weight-semibold) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
+  --body-md-semibold-italic: italic var(--font-weight-semibold) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
+  --body-md-bold: var(--font-weight-bold) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
+  --body-md-bold-italic: italic var(--font-weight-bold) #{rem(1)} / #{rem(1.25)} var(--font-family-sans-serif);
 
-  --body-sm-regular: var(--font-weight-normal) 0.875rem / 1.125rem var(--font-family-sans-serif);
-  --body-sm-italic: italic var(--font-weight-normal) 0.875rem / 1.125rem var(--font-family-sans-serif);
-  --body-sm-semibold: var(--font-weight-semibold) 0.875rem / 1.125rem var(--font-family-sans-serif);
-  --body-sm-semibold-italic: italic var(--font-weight-semibold) 0.875rem / 1.125rem var(--font-family-sans-serif);
-  --body-sm-bold: var(--font-weight-bold) 0.875rem / 1.125rem var(--font-family-sans-serif);
-  --body-sm-bold-italic: italic var(--font-weight-bold) 0.875rem / 1.125rem var(--font-family-sans-serif);
+  --body-sm-regular: var(--font-weight-normal) #{rem(0.875)} / #{rem(1.125)} var(--font-family-sans-serif);
+  --body-sm-italic: italic var(--font-weight-normal) #{rem(0.875)} / #{rem(1.125)} var(--font-family-sans-serif);
+  --body-sm-semibold: var(--font-weight-semibold) #{rem(0.875)} / #{rem(1.125)} var(--font-family-sans-serif);
+  --body-sm-semibold-italic: italic var(--font-weight-semibold) #{rem(0.875)} / #{rem(1.125)}
+    var(--font-family-sans-serif);
+  --body-sm-bold: var(--font-weight-bold) #{rem(0.875)} / #{rem(1.125)} var(--font-family-sans-serif);
+  --body-sm-bold-italic: italic var(--font-weight-bold) #{rem(0.875)} / #{rem(1.125)} var(--font-family-sans-serif);
 
-  --body-xs-regular: var(--font-weight-normal) 0.75rem / 1rem var(--font-family-sans-serif);
-  --body-xs-italic: italic var(--font-weight-normal) 0.75rem / 1rem var(--font-family-sans-serif);
-  --body-xs-semibold: var(--font-weight-semibold) 0.75rem / 1rem var(--font-family-sans-serif);
-  --body-xs-semibold-italic: italic var(--font-weight-semibold) 0.75rem / 1rem var(--font-family-sans-serif);
-  --body-xs-bold: var(--font-weight-bold) 0.75rem / 1rem var(--font-family-sans-serif);
-  --body-xs-bold-italic: italic var(--font-weight-bold) 0.75rem / 1rem var(--font-family-sans-serif);
+  --body-xs-regular: var(--font-weight-normal) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
+  --body-xs-italic: italic var(--font-weight-normal) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
+  --body-xs-semibold: var(--font-weight-semibold) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
+  --body-xs-semibold-italic: italic var(--font-weight-semibold) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
+  --body-xs-bold: var(--font-weight-bold) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
+  --body-xs-bold-italic: italic var(--font-weight-bold) #{rem(0.75)} / #{rem(1)} var(--font-family-sans-serif);
 
-  --body-xxs-regular: var(--font-weight-normal) 0.625rem / 0.75rem var(--font-family-sans-serif);
-  --body-xxs-italic: italic var(--font-weight-normal) 0.625rem / 0.75rem var(--font-family-sans-serif);
-  --body-xxs-semibold: var(--font-weight-semibold) 0.625rem / 0.75rem var(--font-family-sans-serif);
-  --body-xxs-semibold-italic: italic var(--font-weight-semibold) 0.625rem / 0.75rem var(--font-family-sans-serif);
-  --body-xxs-bold: var(--font-weight-bold) 0.625rem / 0.75rem var(--font-family-sans-serif);
-  --body-xxs-bold-italic: italic var(--font-weight-bold) 0.625rem / 0.75rem var(--font-family-sans-serif);
+  --body-xxs-regular: var(--font-weight-normal) #{rem(0.625)} / #{rem(0.75)} var(--font-family-sans-serif);
+  --body-xxs-italic: italic var(--font-weight-normal) #{rem(0.625)} / #{rem(0.75)} var(--font-family-sans-serif);
+  --body-xxs-semibold: var(--font-weight-semibold) #{rem(0.625)} / #{rem(0.75)} var(--font-family-sans-serif);
+  --body-xxs-semibold-italic: italic var(--font-weight-semibold) #{rem(0.625)} / #{rem(0.75)}
+    var(--font-family-sans-serif);
+  --body-xxs-bold: var(--font-weight-bold) #{rem(0.625)} / #{rem(0.75)} var(--font-family-sans-serif);
+  --body-xxs-bold-italic: italic var(--font-weight-bold) #{rem(0.625)} / #{rem(0.75)} var(--font-family-sans-serif);
 }
 
 html.dark {

@@ -1,14 +1,7 @@
 .treeView {
-  padding: 0 0.5rem 4rem;
+  padding: 0 8px 64px;
   color: var(--black);
   font: var(--body-sm-regular);
-
-  .emptyState {
-    padding: 2rem 0;
-    text-align: center;
-    color: var(--color-neutral-700);
-    font: var(--body-sm-regular);
-  }
 
   ul {
     list-style: none;
@@ -17,15 +10,15 @@
   }
 
   .nodeChildren {
-    padding-left: 1rem;
+    padding-left: 16px;
   }
 
   .nodeHeader {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
     width: 100%;
-    padding: 0.375rem 0.25rem;
+    padding: 6px 4px;
     border: none;
     border-radius: 6px;
     background: none;
@@ -83,7 +76,7 @@
   .highlightList {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.25rem 0 0.5rem 1rem;
+    gap: 8px;
+    padding: 4px 0 8px 16px;
   }
 }

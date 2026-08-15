@@ -1,0 +1,3 @@
+@function rem($value) {
+  @return calc(#{$value} * var(--root-font-size));
+}

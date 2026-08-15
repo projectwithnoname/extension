@@ -1,19 +1,19 @@
 @use "../shared/styles/index";
 
 .options {
-  padding: 2rem;
+  padding: 32px;
   font-family: var(--font-family-sans-serif);
 
   h1 {
     font: var(--h2-bold);
     color: var(--color-neutral-900);
-    margin-bottom: 1.5rem;
+    margin-bottom: 24px;
   }
 
   h2 {
     font: var(--h3-semibold);
     color: var(--color-neutral-900);
     text-transform: capitalize;
-    margin-bottom: 0.75rem;
+    margin-bottom: 12px;
   }
 }

@@ -1,0 +1,51 @@
+<svg viewBox="12 10 96 96" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Empty state: a page whose highlight band is still unfilled, with a
+       highlighter resting on it. Drawn entirely in `currentColor`; depth comes
+       from opacity tiers only, so it takes on whatever colour it inherits.
+       The mask knocks the marker's silhouette out of the page beneath it so
+       the page lines don't read through the barrel.
+
+       Every group carries an explicit `fill` — `Icon`'s stylesheet sets `fill`
+       on the <svg> element itself, which beats the root attribute above and
+       would otherwise inherit down and flood the outlines solid. -->
+  <defs>
+    <mask id="noHighlightsCut" maskUnits="userSpaceOnUse" x="0" y="0" width="120" height="120">
+      <rect width="120" height="120" fill="#fff" />
+      <g transform="rotate(40 80 72)" fill="#000" stroke="none">
+        <rect x="65" y="43" width="30" height="40" rx="11" />
+        <path d="M68 80h24l-7 21h-10z" />
+      </g>
+    </mask>
+  </defs>
+
+  <g mask="url(#noHighlightsCut)" fill="none">
+    <!-- sheet -->
+    <rect x="18" y="16" width="62" height="84" rx="10" />
+
+    <!-- lines of text -->
+    <g opacity="0.45">
+      <path d="M32 36h34" />
+      <path d="M32 46h22" />
+      <path d="M30 84h26" />
+    </g>
+
+    <!-- the highlight that isn't there yet -->
+    <rect
+      x="27"
+      y="54"
+      width="40"
+      height="17"
+      rx="5"
+      stroke-width="3"
+      stroke-dasharray="6 7"
+      opacity="0.75"
+    />
+  </g>
+
+  <!-- highlighter -->
+  <g transform="rotate(40 80 72)" fill="none">
+    <rect x="70" y="48" width="20" height="30" rx="6" />
+    <path d="M70 62h20" opacity="0.4" />
+    <path d="M73 78h14l-4 16h-6z" fill="currentColor" fill-opacity="0.2" />
+  </g>
+</svg>
