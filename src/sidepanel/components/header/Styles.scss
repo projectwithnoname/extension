@@ -15,9 +15,15 @@
       color: var(--color-neutral-500);
       cursor: pointer;
       position: relative;
+      background: transparent;
 
       &:hover {
         color: var(--color-neutral-900);
+      }
+
+      &:focus-visible {
+        outline-offset: -2px;
+        border-radius: 6px;
       }
 
       &.active {

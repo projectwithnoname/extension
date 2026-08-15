@@ -4,14 +4,18 @@ interface SegmentPickerItemProps {
   label: string;
   active?: boolean;
   onClick?: () => void;
-  onMouseUp?: () => void;
 }
 
-const SegmentPickerItem = ({ label, active, onClick, onMouseUp }: SegmentPickerItemProps) => {
+const SegmentPickerItem = ({ label, active, onClick }: SegmentPickerItemProps) => {
   return (
-    <div className={`segmentPickerItem ${active ? "active" : ""}`} onClick={onClick} onMouseUp={onMouseUp}>
+    <button
+      type="button"
+      className={`segmentPickerItem ${active ? "active" : ""}`}
+      aria-pressed={active}
+      onClick={onClick}
+    >
       {label}
-    </div>
+    </button>
   );
 };
 
