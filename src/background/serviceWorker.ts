@@ -1,4 +1,6 @@
 import { isAuthTokenMessage } from "../shared/auth";
+import { isPingMessage } from "../shared/external";
+import type { PingResponse } from "../shared/external";
 import type { AuthRequest } from "../shared/auth";
 import type { Highlight } from "../shared/types";
 import { handleToken, signOut, startSignIn } from "./auth";
@@ -8,6 +10,14 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  if (isPingMessage(message)) {
+    const pong: PingResponse = { ok: true, version: chrome.runtime.getManifest().version };
+
+    sendResponse(pong);
+
+    return false;
+  }
+
   if (!isAuthTokenMessage(message)) {
     return false;
   }
