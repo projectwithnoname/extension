@@ -1,0 +1,43 @@
+.workspaceItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--alpha-night-10);
+  border-radius: 6px;
+  --fill-icon-color: var(--color-neutral-700);
+
+  .details {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin-right: auto;
+
+    .name {
+      font: var(--body-sm-semibold);
+      color: var(--color-neutral-900);
+    }
+
+    .meta {
+      font: var(--body-xs-regular);
+      color: var(--color-neutral-700);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .access {
+    flex-shrink: 0;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font: var(--body-xxs-semibold);
+    background-color: var(--alpha-night-5);
+    color: var(--color-neutral-700);
+
+    &.edit {
+      background-color: var(--brand-purple);
+      color: var(--color-neutral-0);
+    }
+  }
+}

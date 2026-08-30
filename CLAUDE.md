@@ -57,15 +57,25 @@ Shared view "Sign in" button
 
 Auth reuses the storage-broadcast pattern above: the website's tab writes storage, and every context picks it up on `onChanged`. That is the *only* path from sign-in to the panel — there is no messaging between the tab and the panel.
 
-- **`src/shared/auth.ts`** — the contract shared with the website: `WEBSITE_ORIGIN`, `AUTH0_ORIGIN`, `LOGOUT_URL`, `AuthUser`, `AuthState` (`unknown | signed-out | signed-in`), the storage keys `AUTH_STATE_KEY` / `ACCESS_TOKEN_KEY`, `AuthRequest`, `AuthTokenMessage`, and the `isAuthTokenMessage()` type guard. `WEBSITE_ORIGIN` must stay in sync with `externally_connectable.matches` in `public/manifest.json`, and `AUTH0_ORIGIN` with the website's `AUTH0_DOMAIN`.
-- **`src/shared/external.ts`** — the other half of the website contract: the `PING` message, its `PingResponse`, and the `isPingMessage()` guard. A web page cannot see an installed extension, so `onMessageExternal` answers a `PING` with `{ ok: true, version }` — the reply arriving at all is the whole signal. That branch needs no `sender.origin` check (only origins in `externally_connectable.matches` can send, and the version is not a secret) and must stay synchronous: returning `true` would hold a channel open for a reply already sent.
-- **`src/background/auth.ts`** — the only writer of auth storage: `readAuthState`, `getAccessToken`, `startSignIn`, `handleToken`, `signOut`.
-- **`handleToken` checks `sender.origin` against `WEBSITE_ORIGIN`** and returns `false` otherwise. This is the trust boundary — any page can attempt an external message. Keep the check first, before touching storage.
+- **`src/shared/auth.ts`** — the contract shared with the website: `WEBSITE_ORIGIN`, `SIGN_IN_URL`, `AuthUser`, `AuthState` (`unknown | signed-out | signed-in`), the storage keys `AUTH_STATE_KEY` / `ACCESS_TOKEN_KEY`, `AuthRequest`, `AuthTokenMessage`, and the `isAuthTokenMessage()` type guard. `WEBSITE_ORIGIN` must stay in sync with `externally_connectable.matches` in `public/manifest.json`. Nothing here names the Auth0 tenant any more — the extension never talks to Auth0.
+- **`src/shared/external.ts`** — the other half of the website contract: the `PING` message, its `PingResponse`, the `SIGN_OUT` message, and the `isPingMessage()` / `isSignOutMessage()` guards. A web page cannot see an installed extension, so `onMessageExternal` answers a `PING` with `{ ok: true, version }` — the reply arriving at all is the whole signal. That branch needs no `sender.origin` check (only origins in `externally_connectable.matches` can send, and the version is not a secret) and must stay synchronous: returning `true` would hold a channel open for a reply already sent.
+- **`src/background/auth.ts`** — the only writer of auth storage: `readAuthState`, `getAccessToken`, `startSignIn`, `handleToken`, `openSignOut`, `clearSession`.
+- **`handleToken` and `clearSession` check `sender.origin` against `WEBSITE_ORIGIN`** and return `false` otherwise. This is the trust boundary — any page can attempt an external message. Keep the check first, before touching storage.
 - **`status: "unknown"`** is the pre-read state, not an error. Render a placeholder for it; treating it as signed-out flashes the sign-in prompt on every panel open.
 
 The `key` field in `public/manifest.json` pins the extension ID across reinstalls, which is what keeps the website's `EXTENSION_ID` valid. **Do not regenerate or remove it** — a new ID silently breaks the handoff.
 
-`signOut()` is a full sign-out, in three steps: it clears local storage (so the panel flips immediately), then opens the website's `/auth/logout` in a background tab and closes it once the redirect chain lands back on `WEBSITE_ORIGIN`, then removes any cookie left on `WEBSITE_ORIGIN` or `AUTH0_ORIGIN`. All three matter — clearing storage alone leaves the website session cookie and Auth0's SSO cookie alive, and either one signs the user back in with no prompt. The cookie sweep is the fallback for when the website is unreachable and the round-trip does nothing; it needs the `cookies` permission in `public/manifest.json`.
+**Signing out is the website's, not ours.** `openSignOut()` only opens `SIGN_IN_URL` in a foreground tab; the page pings us, sees we are installed, and shows the account with its own log out button. The website then clears our token by sending `SIGN_OUT` — the mirror image of the `AUTH_TOKEN` handover — and `clearSession()` writes signed-out storage, which the panel picks up on `onChanged` like any other change:
+
+```
+Shared view "Sign out" button
+  → useAuth().signOut() → { type: "AUTH_SIGN_OUT" } → openSignOut(): tab on SIGN_IN_URL
+    → user clicks "Log out" there
+      → website sends { type: "SIGN_OUT" } → clearSession() clears storage
+        → website navigates to /auth/logout, ending its session and Auth0's
+```
+
+The extension used to do this itself — clear storage, drive `/auth/logout` in a hidden tab, then sweep cookies on both origins. That made two sources of truth: the website's session cookie and Auth0's SSO cookie outlive anything we clear locally, and either one signs the user back in with no prompt, so a local-only sign-out left the panel claiming signed-out over a live account. Ordering also mattered and was easy to get wrong. Now the session is ended in exactly one place and we are told the outcome. The `cookies` permission went with it — **do not add it back** to clear an auth cookie; that is the pattern this replaced.
 
 The stored token is a 30-day HMAC minted by the website. Nothing refreshes or validates it yet, and no request currently sends it — `getAccessToken()` exists for the sync backend that doesn't exist.
 
@@ -109,7 +119,7 @@ The primary UI (replaces the old popup), opened from the toolbar action and decl
 - **`main.tsx`** — Mounts `<SidePanel />` into `#root`.
 - **`SidePanel.tsx`** — View shell: the `views` registry (`page` / `shared` / `tree`), `activeView` state, and the provider stack `ThemeProvider > AuthProvider > HighlightsProvider > FilterProvider` wrapping `Header` + the active view.
 - **`context/HighlightsContext.tsx`** + **`hooks/useHighlights.ts`** — The store. Mirrors `chrome.storage.local["highlights"]`, subscribes to `onChanged`, and exposes `highlights`, `loading`, `updateHighlight`, `updateNote`, `deleteHighlight`. Mutators only send messages (via `messaging.ts`); `onChanged` is what updates local state, so there is one write path and no drift. Read-only consumers use the `useHighlights()` hook.
-- **`context/AuthContext.tsx`** + **`hooks/useAuth.ts`** — Same shape for auth: mirrors `chrome.storage.local["authState"]`, subscribes to `onChanged`, exposes `state`, `signIn`, `signOut`. Both mutators only post `AuthRequest` messages to the background — the panel never writes auth storage and never touches Auth0.
+- **`context/AuthContext.tsx`** + **`hooks/useAuth.ts`** — Same shape for auth: mirrors `chrome.storage.local["authState"]`, subscribes to `onChanged`, exposes `state`, `signIn`, `signOut`. Both mutators only post `AuthRequest` messages to the background, and both merely open a website tab — the panel never writes auth storage and never touches Auth0. `signOut` in particular does not sign anyone out on its own: the state flips when the website sends `SIGN_OUT` back.
 - **`views/Shared.tsx`** — Renders on `state.status`: a blank `aria-busy` placeholder for `unknown`, the sign-in prompt for `signed-out`, and the account header (avatar, name, email, sign-out) for `signed-in`. Shared-highlight content is still a stub.
 - **`components/header/Header.tsx`** — Tab bar.
 - **`ARCHITECTURE.md`** — Design blueprint/intent for the full side panel (scoping, tree grouping, theming, sync) ahead of the current implementation. **`SYNC_IMPLEMENTATION_PLAN.md`** — sync plan notes.

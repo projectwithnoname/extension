@@ -53,4 +53,19 @@
       }
     }
   }
+
+  .workspaceLoading {
+    height: 64px;
+  }
+
+  .workspaceError {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--alpha-night-10);
+    border-radius: 6px;
+    color: var(--color-neutral-700);
+  }
 }

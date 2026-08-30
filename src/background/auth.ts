@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY, AUTH0_ORIGIN, AUTH_STATE_KEY, LOGOUT_URL, SIGNED_OUT, WEBSITE_ORIGIN } from "../shared/auth";
+import { ACCESS_TOKEN_KEY, AUTH_STATE_KEY, LOGOUT_URL, SIGNED_OUT, SIGN_IN_URL, WEBSITE_ORIGIN } from "../shared/auth";
 import type { AuthState, AuthTokenMessage, AuthUser } from "../shared/auth";
 
 export const readAuthState = async (): Promise<AuthState> => {
@@ -13,8 +13,7 @@ export const getAccessToken = async (): Promise<string | null> => {
   return (stored[ACCESS_TOKEN_KEY] as string | undefined) ?? null;
 };
 
-export const startSignIn = (): Promise<chrome.tabs.Tab> =>
-  chrome.tabs.create({ url: `${WEBSITE_ORIGIN}/sign-in`, active: true });
+export const startSignIn = (): Promise<chrome.tabs.Tab> => chrome.tabs.create({ url: SIGN_IN_URL, active: true });
 
 /**
  * Stores the token the website just handed us. Returns whether it was accepted,
@@ -38,76 +37,26 @@ export const handleToken = async (
   return true;
 };
 
-/** Give up on the logout round-trip rather than leaving a tab open forever. */
-const LOGOUT_TIMEOUT_MS = 10_000;
+export const openSignOut = (): Promise<chrome.tabs.Tab> => chrome.tabs.create({ url: SIGN_IN_URL, active: true });
 
-/**
- * Drives the website's /auth/logout in a background tab and closes it once the
- * redirect chain lands back on us. Clearing storage alone is not a sign-out:
- * the website's session cookie and Auth0's SSO cookie each log the user
- * straight back in with no prompt, so the round-trip is what actually ends the
- * session on both.
- */
-const endWebsiteSession = async (): Promise<void> => {
-  const tab = await chrome.tabs.create({ url: LOGOUT_URL, active: false });
-
-  if (tab.id === undefined) {
-    return;
+export const clearSession = async (sender: chrome.runtime.MessageSender): Promise<boolean> => {
+  if (sender.origin !== WEBSITE_ORIGIN) {
+    return false;
   }
 
-  const tabId = tab.id;
-
-  await new Promise<void>((resolve) => {
-    const finish = () => {
-      chrome.tabs.onUpdated.removeListener(handleUpdate);
-      clearTimeout(timer);
-      resolve();
-    };
-
-    const handleUpdate = (updatedId: number, change: chrome.tabs.OnUpdatedInfo, updated: chrome.tabs.Tab) => {
-      // The chain is /auth/logout → {tenant}.auth0.com → back here, so only a
-      // completed load on our origin that is no longer the logout route is done.
-      if (
-        updatedId === tabId &&
-        change.status === "complete" &&
-        updated.url?.startsWith(WEBSITE_ORIGIN) &&
-        !updated.url.includes("/auth/logout")
-      ) {
-        finish();
-      }
-    };
-
-    const timer = setTimeout(finish, LOGOUT_TIMEOUT_MS);
-
-    chrome.tabs.onUpdated.addListener(handleUpdate);
-  });
-
-  await chrome.tabs.remove(tabId).catch(() => undefined);
-};
-
-/**
- * Belt and braces after the logout round-trip: if the website was unreachable
- * (dev server down, offline) its cookie would survive and silently sign the
- * user back in. Removing them by hand guarantees the browser has forgotten the
- * account either way.
- */
-const clearAuthCookies = async (): Promise<void> => {
-  const cookies = await Promise.all([WEBSITE_ORIGIN, AUTH0_ORIGIN].map((url) => chrome.cookies.getAll({ url })));
-
-  await Promise.all(
-    cookies.flat().map((cookie) => {
-      const host = cookie.domain.replace(/^\./, "");
-      const url = `${cookie.secure ? "https" : "http"}://${host}${cookie.path}`;
-
-      return chrome.cookies.remove({ url, name: cookie.name, storeId: cookie.storeId }).catch(() => undefined);
-    }),
-  );
-};
-
-export const signOut = async (): Promise<void> => {
   await chrome.storage.local.remove(ACCESS_TOKEN_KEY);
   await chrome.storage.local.set({ [AUTH_STATE_KEY]: SIGNED_OUT });
 
-  await endWebsiteSession();
-  await clearAuthCookies();
+  return true;
 };
+
+/**
+ * Uninstalling runs no code of ours, so the one thing Chrome will do on our
+ * behalf is open a URL. Point it at the website's logout while someone is
+ * signed in, and clear it again when they are not — an uninstall by a
+ * signed-out user should open nothing at all.
+ */
+export const uninstallUrlFor = (state: AuthState): string => (state.status === "signed-in" ? LOGOUT_URL : "");
+
+export const syncUninstallLogout = (state: AuthState): Promise<void> =>
+  chrome.runtime.setUninstallURL(uninstallUrlFor(state));

@@ -5,18 +5,12 @@
 /** Where the website lives. Must stay in sync with `externally_connectable` in manifest.json. */
 export const WEBSITE_ORIGIN = "http://localhost:3000";
 
-/**
- * The website's Auth0 tenant (its `AUTH0_DOMAIN`). Only used to scrub the SSO
- * cookie after logout; it is public — every login URL already carries it.
- */
-export const AUTH0_ORIGIN = "https://dev-kr8zsgx4lwagpxsm.us.auth0.com";
+export const SIGN_IN_URL = `${WEBSITE_ORIGIN}/sign-in`;
 
 /**
- * The website's logout route, mounted by the Auth0 SDK middleware. Clears the
- * website's session cookie, then bounces through Auth0 to clear the SSO cookie.
- * No `returnTo` on purpose: the SDK then falls back to the website's
- * `APP_BASE_URL`, which is the exact string already in Auth0's Allowed Logout
- * URLs — a hand-written one risks a trailing-slash mismatch Auth0 would reject.
+ * Where an uninstall sends the browser. The website owns the session — its own
+ * cookie and Auth0's SSO cookie both outlive the extension — so removing us
+ * cannot sign anyone out on its own; this route is what does it.
  */
 export const LOGOUT_URL = `${WEBSITE_ORIGIN}/auth/logout`;
 

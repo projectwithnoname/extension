@@ -1,12 +1,20 @@
-import { isAuthTokenMessage } from "../shared/auth";
-import { isPingMessage } from "../shared/external";
+import { AUTH_STATE_KEY, isAuthTokenMessage, SIGNED_OUT } from "../shared/auth";
+import { isPingMessage, isSignOutMessage } from "../shared/external";
 import type { PingResponse } from "../shared/external";
-import type { AuthRequest } from "../shared/auth";
+import type { AuthRequest, AuthState } from "../shared/auth";
 import type { Highlight } from "../shared/types";
-import { handleToken, signOut, startSignIn } from "./auth";
+import { clearSession, handleToken, openSignOut, readAuthState, startSignIn, syncUninstallLogout } from "./auth";
 
 chrome.runtime.onInstalled.addListener(() => {
   console.log("Extension installed");
+});
+
+readAuthState().then(syncUninstallLogout);
+
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes[AUTH_STATE_KEY]) {
+    syncUninstallLogout((changes[AUTH_STATE_KEY].newValue as AuthState | undefined) ?? SIGNED_OUT);
+  }
 });
 
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
@@ -16,6 +24,12 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     sendResponse(pong);
 
     return false;
+  }
+
+  if (isSignOutMessage(message)) {
+    clearSession(sender).then((ok) => sendResponse({ ok }));
+
+    return true;
   }
 
   if (!isAuthTokenMessage(message)) {
@@ -34,7 +48,7 @@ chrome.runtime.onMessage.addListener((message: AuthRequest, _sender, sendRespons
   }
 
   if (message.type === "AUTH_SIGN_OUT") {
-    signOut().then(() => sendResponse({ ok: true }));
+    openSignOut().then(() => sendResponse({ ok: true }));
     return true;
   }
 

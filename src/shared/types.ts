@@ -19,3 +19,15 @@ export interface Highlight {
 export type ViewId = "page" | "shared" | "tree";
 
 export type FilterScope = "page" | "domain" | "all";
+
+export type WorkspaceAccess = "view" | "edit";
+
+export interface SharedWorkspace {
+  id: string;
+  name: string;
+  access: WorkspaceAccess;
+  owned: boolean;
+  ownerEmail: string | null;
+  memberCount: number;
+  highlightCount: number;
+}

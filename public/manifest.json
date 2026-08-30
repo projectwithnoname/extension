@@ -3,7 +3,7 @@
   "name": "Higlight",
   "version": "1.0.0",
   "description": "A super cool extension",
-  "permissions": ["storage", "activeTab", "scripting", "sidePanel", "cookies"],
+  "permissions": ["storage", "activeTab", "scripting", "sidePanel"],
   "host_permissions": ["<all_urls>"],
 
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4uJVvhgdr3THbvPeAvAcIFy1M06TvVKFfRvpMfZrYPCyduoK3zx10Ye3jQHUm9us+IFHx1y+6LQhozqdr0rwJoG2vo3R5154QC2djFvABdp5VaVrAQcuvPlMgrqiCHK6AyfiPaegKCryuestieOh0Z6dKZDrxahk/+NpdgA0lswxZeMBeKajF4LAlfvcRnPc1Qw83da7MA5pLkDx0i5vbfGmsXE72uZfJinsqKQ3NlkAxEOnQXu9/DBN5HLpzrqKdcvp/KVMbGBllgvsk8w7YTroTHm/dthEgaIh0RN8EkhvNtESEH9BV6ncSBdTmvEYnSJrhWE5mV8hcdzQBv8tgwIDAQAB",
